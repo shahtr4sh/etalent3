@@ -6,7 +6,7 @@ use App\Filament\Resources\Pemohons\Pages\CreatePemohon;
 use App\Filament\Resources\Pemohons\Pages\EditPemohon;
 use App\Filament\Resources\Pemohons\Pages\ListPemohons;
 use App\Filament\Resources\Pemohons\Pages\ViewPemohon;
-use App\Filament\Resources\Pemohons\RelationManagers\PenyeliaanRelationManager;
+use App\Filament\Resources\Pemohons\Pages\ViewStaffProfile;
 use App\Filament\Resources\Pemohons\RelationManagers\PromotionApplicationRelationManager;
 use App\Filament\Resources\Pemohons\Schemas\PemohonForm;
 use App\Filament\Resources\Pemohons\Schemas\PemohonInfolist;

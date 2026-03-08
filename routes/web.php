@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\App\Auth\LoginController;
 use App\Livewire\App\Profile\ShowProfile;
+use App\Http\Controllers\CvController;
 use App\Livewire\App\Permohonan\Index as PermohonanIndex;
 use App\Livewire\App\Permohonan\Show as PermohonanShow;
 use App\Livewire\App\Permohonan\Create as PermohonanCreate;
@@ -39,21 +40,18 @@ Route::prefix('app')->name('app.')->group(function () {
     // Protected routes (require login)
     Route::middleware(['auth'])->group(function () {
 
-        // ✅ Livewire routes guna Route::get + ::class
         Route::get('/dashboard', DashboardIndex::class)->name('dashboard');
-
         Route::get('/profil', ShowProfile::class)->name('profil');
 
-        Route::get('/permohonan', PermohonanIndex::class)->name('permohonan.index');
+        // CV route untuk staff (tanpa parameter - guna ID sendiri)
+        Route::get('/profil/cv', [CvController::class, 'generate'])
+            ->name('profil.cv');
 
+        Route::get('/permohonan', PermohonanIndex::class)->name('permohonan.index');
         Route::get('/permohonan/{id}', PermohonanShow::class)
             ->whereNumber('id')
             ->name('permohonan.show');
-
         Route::get('/permohonan/baru', PermohonanCreate::class)->name('permohonan.create');
-
-        Route::get('/profil/cv', [App\Http\Controllers\CvController::class, 'generate'])
-            ->name('profil.cv');
     });
 
 
@@ -65,6 +63,12 @@ Route::prefix('app')->name('app.')->group(function () {
 | ADMIN (Filament)
 |--------------------------------------------------------------------------
 */
+
+Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(function () {
+    // Admin CV route dengan parameter staff_id
+    Route::get('/staff/{staff_id}/cv', [CvController::class, 'generate'])
+        ->name('staff.cv'); // akan jadi 'admin.staff.cv'
+});
 
 // Biarkan Filament urus sendiri /admin
 Route::get('/login', function () {

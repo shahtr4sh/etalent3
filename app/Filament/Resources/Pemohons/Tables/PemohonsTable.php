@@ -42,11 +42,10 @@ class PemohonsTable
                 ViewAction::make(),
                 EditAction::make(),
                 Action::make('CV')
-                ->url(function ($record) {
-                    return 'https://ukmsarjana.ukm.my/main/muatturun_cv/SzAwNzI4MQ==?nostaf' . $record->staff_id;
-                })
+                ->label('Muat Turun CV')
+                ->icon('heroicon-o-document-arrow-down')
+                ->url(fn ($record) => route('admin.staff.cv', ['staff_id' => $record->staff_id]))
                 ->openUrlInNewTab(),
-
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -15,13 +15,26 @@ class ShowProfile extends Component
 
     public $pemohon;
     public $penyeliaan = [];
+    public $staff_id;
+    public $is_admin_view = false;
     public $searchPenerbitan = '';
 
     protected $paginationTheme = 'tailwind';
 
-    public function mount()
+    public function mount($staff_id = null, $is_admin_view = false)
     {
-        $user = auth()->user();
+        $this->is_admin_view = $is_admin_view;
+
+        if ($this->is_admin_view && $staff_id) {
+            $userId = $staff_id;
+        } else {
+            // Kalau staff login sendiri, guna ID dia
+            $userId = auth()->user()->staff_id ?? null;
+        }
+
+        if (!$userId) {
+            return;
+        }
 
         $this->pemohon = Pemohon::with([
             'gelaran',
@@ -34,7 +47,7 @@ class ShowProfile extends Component
             },
             'jawatanStafTerkini',
             'markahTerkini',
-        ])->where('staff_id', $user?->staff_id)->first();
+        ])->where('staff_id', $userId)->first();
 
         $this->loadPenyeliaan();
     }
@@ -55,9 +68,29 @@ class ShowProfile extends Component
 
     public function render()
     {
+        // Get publications data
+        $penerbitan = collect([]);
+        $totalPenerbitan = 0;
+
+        if ($this->pemohon) {
+            $pubIds = PubAuthor::where('nostaf', $this->pemohon->staff_id)
+                ->pluck('pub_item_id')
+                ->unique();
+
+            $totalPenerbitan = PenerbitanStaf::whereIn('id', $pubIds)->count();
+
+            $penerbitan = PenerbitanStaf::whereIn('id', $pubIds)
+                ->with(['authors', 'indexes'])
+                ->orderBy('publish_date', 'desc')
+                ->take(5)
+                ->get();
+        }
+
         return view('livewire.app.profile.show-profile', [
-            'penerbitan' => $this->pemohon->penerbitan_list ?? collect([]),
-            'totalPenerbitan' => $this->pemohon->penerbitan_count ?? 0,
+            'pemohon' => $this->pemohon,
+            'penyeliaan' => $this->penyeliaan,
+            'penerbitan' => $penerbitan,
+            'totalPenerbitan' => $totalPenerbitan
         ]);
     }
 }
