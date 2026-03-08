@@ -1,0 +1,81 @@
+# eTalent - Sistem Pengurusan Permohonan Kenaikan Pangkat
+
+## 📋 Overview
+eTalent is a comprehensive application management system for handling promotion applications. It features both an applicant-facing interface built with Livewire and an administrative panel powered by Filament PHP.
+
+## 🏗️ Tech Stack
+- **Framework**: Laravel 12.53.0
+- **PHP Version**: 8.2.12
+- **Database**: MySQL/MariaDB 10.4.32
+- **Frontend**: Livewire v4, TailwindCSS
+- **Admin Panel**: Filament v5.2.2
+- **Authentication**: Laravel Breeze / Filament Authentication
+- **Authorization**: Spatie Permission + Filament Shield
+
+## ✨ Key Features
+
+### Applicant Module (Livewire)
+- ✅ Create new promotion applications
+- ✅ Save applications as draft
+- ✅ Submit applications for processing
+- ✅ View application status and history
+- ✅ Edit returned applications for corrections
+- ✅ Automatic reference number generation
+- ✅ Color-coded status badges with descriptions
+
+### Admin Module (Filament)
+- ✅ Full CRUD operations for applications
+- ✅ Status management with history tracking
+- ✅ Document upload and management
+- ✅ Role-based permissions (Filament Shield)
+- ✅ Advanced filtering and search
+- ✅ Status history timeline
+- ✅ Dashboard with statistics
+
+## 🎨 Application Status Flow
+
+| Status | Description | Color |
+|--------|-------------|-------|
+| Draf | Permohonan belum dihantar | Gray |
+| Dihantar | Permohonan dihantar untuk diproses | Blue |
+| Menunggu Semakan | Dalam peti masuk urusetia/penyemak | Yellow |
+| Dipulangkan | Tidak lengkap; perlu pembetulan | Orange |
+| Dalam Semakan | Semakan merit/kandungan | Indigo |
+| Untuk Kelulusan | Lengkap dan sedia untuk keputusan Pelulus | Purple |
+| Perlu Maklumat | Pelulus minta tambahan data/dokumen | Pink |
+| Tangguh | Keputusan ditangguh | Amber |
+| Lulus | Keputusan muktamad lulus | Green |
+| Tidak Lulus | Keputusan muktamad tidak lulus | Red |
+| Ditutup | Rekod ditutup untuk simpanan/audit | Slate |
+
+## 🚀 Installation
+
+### Prerequisites
+- PHP 8.2+
+- Composer
+- MySQL/MariaDB
+- Node.js & NPM
+
+## 🔧 Configuration
+
+### Filament Panel
+The admin panel is configured in `app/Providers/Filament/AdminPanelProvider.php` with:
+- Custom navigation groups
+- Filament Shield integration
+- User menu items
+
+## 📝 License
+This project is proprietary and confidential.
+
+## 👥 Authors
+- Faris - Initial development
+
+## 🙏 Acknowledgments
+- Laravel Framework
+- Filament PHP
+- Livewire
+- Spatie Permission
+
+---
+
+**Note**: This README reflects the current state of the project with all features implemented including the applicant module (Livewire), admin module (Filament), status tracking, document management, and history logging.
