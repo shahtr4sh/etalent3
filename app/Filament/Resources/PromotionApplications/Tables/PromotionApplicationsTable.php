@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Filament\Resources\Pemohons\Tables;
+namespace App\Filament\Resources\PromotionApplications\Tables;
 
-use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class PemohonsTable
+class PromotionApplicationsTable
 {
     public static function configure(Table $table): Table
     {
@@ -18,12 +18,14 @@ class PemohonsTable
             ->columns([
                 TextColumn::make('staff_id')
                     ->searchable(),
-                TextColumn::make('nama')
+                TextColumn::make('gred_jawatan')
                     ->searchable(),
-                TextColumn::make('emel_rasmi')
+                TextColumn::make('reference_no')
                     ->searchable(),
                 TextColumn::make('status')
-                    ->searchable(),
+                    ->badge(),
+                IconColumn::make('is_active')
+                    ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -32,6 +34,8 @@ class PemohonsTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('reviewed_by_staff_id')
+                    ->searchable(),
             ])
             ->filters([
                 //
@@ -39,11 +43,6 @@ class PemohonsTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                Action::make('CV')
-                ->label('CV')
-                ->icon('heroicon-o-document-arrow-down')
-                ->url(fn ($record) => route('admin.staff.cv', ['staff_id' => $record->staff_id]))
-                ->openUrlInNewTab(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

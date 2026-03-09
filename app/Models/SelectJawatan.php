@@ -41,6 +41,6 @@ class SelectJawatan extends Model
      */
     public function getDisplayNameAttribute()
     {
-        return trim($this->nama_jawatan . ' (' . $this->gredJawatan . ')');
+        return trim($this->nama_jawatan . ' (' . $this->kodJawatan . $this->gredJawatan . ')');
     }
 }

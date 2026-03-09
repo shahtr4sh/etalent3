@@ -7,8 +7,11 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Forms;
+use App\Models\PromotionApplication;
+use App\Models\Pemohon;
 
-class PromotionApplicationRelationManager extends RelationManager
+class PromotionApplicationsRelationManager extends RelationManager
 {
     protected static string $relationship = 'promotionApplications';
 

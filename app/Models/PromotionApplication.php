@@ -22,8 +22,12 @@ class PromotionApplication extends Model
         'metadata' => 'array'
     ];
 
-    public function staff()
+    public function pemohon()
     {
         return $this->belongsTo(Pemohon::class, 'staff_id', 'staff_id');
     }
+//    public function staff()
+//    {
+//        return $this->belongsTo(Pemohon::class, 'staff_id', 'staff_id');
+//    }
 }

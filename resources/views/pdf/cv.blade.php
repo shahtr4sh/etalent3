@@ -9,7 +9,6 @@
             font-family: 'DejaVu Sans', sans-serif;
         }
 
-        /* Kalau nak RTL untuk Arabic sections je */
         .arabic-section {
             direction: rtl;
             text-align: right;
@@ -114,7 +113,7 @@
             <img src="{{ $profileImage }}" alt="">
         @else
             <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#f0f0f0; border-radius:50%;">
-                <span style="font-size:24px; color:#7f8c8d;">👤</span>
+                <span style="font-size:24px; color:#7f8c8d;">?</span>
             </div>
         @endif
     </div>
