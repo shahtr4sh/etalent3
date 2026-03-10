@@ -34,6 +34,7 @@ class PenyeliaanStaf extends Model
     public function program()
     {
         return $this->belongsTo(TesisProgram::class, 'kod_prog', 'kod_prog');
+
     }
 
     /**

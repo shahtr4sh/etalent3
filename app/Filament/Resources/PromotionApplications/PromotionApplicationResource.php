@@ -12,7 +12,6 @@ use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -26,9 +25,9 @@ use App\Filament\Resources\PromotionApplications\Pages\ViewPromotionApplication;
 class PromotionApplicationResource extends Resource
 {
     protected static ?string $model = PromotionApplication::class;
+
     protected static ?string $recordTitleAttribute = 'reference_no';
 
-    // GUNA STRING TERUS untuk navigation icon (lebih reliable)
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $navigationLabel = 'Permohonan';
@@ -39,7 +38,7 @@ class PromotionApplicationResource extends Resource
     {
         return $schema
             ->schema([
-                // Form schema jika perlu
+                //
             ]);
     }
 

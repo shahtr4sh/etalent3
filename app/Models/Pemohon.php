@@ -30,6 +30,15 @@ class Pemohon extends Model
         return $this->gelaran?->gelaran ?? '';
     }
 
+    /**
+     * Get performance evaluations for staff
+     */
+    public function performanceEvaluations()
+    {
+        return $this->hasMany(StafPerformance::class, 'no_staf', 'staff_id')
+            ->orderBy('year', 'desc');
+    }
+
     public function jawatanStaf()
     {
         return $this->hasMany(\App\Models\JawatanStaf::class, 'no_staf', 'staff_id');
@@ -45,6 +54,12 @@ class Pemohon extends Model
     public function jabatanStaf()
     {
         return $this->hasOne(\App\Models\JabatanStaf::class, 'no_staf', 'staff_id');
+    }
+
+    public function tatatertib()
+    {
+        return $this->hasMany(StafTatatertib::class, 'no_staf', 'staff_id')
+            ->orderBy('tarikh_conduct', 'desc');
     }
 
     public function akademikStaf()

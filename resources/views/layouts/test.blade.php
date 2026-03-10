@@ -38,7 +38,7 @@
            class="text-gray-700 hover:text-blue-900 font-medium text-sm uppercase tracking-wider py-2 border-b-2 {{ request()->routeIs('app.permohonan.index') ? 'border-blue-900 text-blue-900' : 'border-transparent hover:border-blue-900' }} transition duration-150">
             Permohonan
         </a>
-        <a href="{{ route('app.profil') }}"
+        <a href="{{ route('app.profil.show', ['staff_id' => $pemohon->staff_id]) }}">Profil
            class="text-gray-700 hover:text-blue-900 font-medium text-sm uppercase tracking-wider py-2 border-b-2 {{ request()->routeIs('app.profil') ? 'border-blue-900 text-blue-900' : 'border-transparent hover:border-blue-900' }} transition duration-150">
             Profil
         </a>

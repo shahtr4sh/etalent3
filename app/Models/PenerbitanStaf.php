@@ -66,6 +66,35 @@ class PenerbitanStaf extends Model
     }
 
     /**
+     * Capitalize first letter of a sentence
+     */
+    private function capitalizeFirstSentence($text)
+    {
+        if (empty($text)) {
+            return '';
+        }
+
+        // Trim whitespace
+        $text = trim($text);
+
+        // If all uppercase, convert to proper case
+        if (mb_strtoupper($text) === $text) {
+            $text = mb_strtolower($text);
+        }
+
+        // Capitalize first letter
+        return mb_strtoupper(mb_substr($text, 0, 1)) . mb_substr($text, 1);
+    }
+
+    /**
+     * Get formatted title with proper capitalization
+     */
+    public function getFormattedTitleAttribute()
+    {
+        return $this->capitalizeFirstSentence($this->title);
+    }
+
+    /**
      * Format authors in simple format: "Lastname, Initials"
      */
     public function getFormattedAuthorsAttribute()
@@ -82,13 +111,13 @@ class PenerbitanStaf extends Model
     }
 
     /**
-     * Format for citation: "Authors (year). Title"
+     * Format for citation: "Authors (year). Title" with proper capitalization
      */
     public function getCitationAttribute()
     {
         $authors = $this->formatted_authors;
         $year = $this->tahun ?? 'n.d.';
-        $title = $this->title ?? 'No title';
+        $title = $this->formatted_title ?? 'No title';
 
         return "{$authors} ({$year}). {$title}";
     }
@@ -148,13 +177,13 @@ class PenerbitanStaf extends Model
     }
 
     /**
-     * Get full APA citation
+     * Get full APA citation with proper capitalization
      */
     public function getApaCitationAttribute()
     {
         $authors = $this->formatted_authors;
         $year = $this->tahun ?? 'n.d.';
-        $title = $this->title ?? 'No title';
+        $title = $this->formatted_title ?? 'No title';
         $type = $this->type ? " [{$this->type}]" : '';
 
         return trim("{$authors} ({$year}). {$title}{$type}");

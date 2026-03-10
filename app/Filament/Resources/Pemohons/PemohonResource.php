@@ -11,6 +11,7 @@ use App\Filament\Resources\Pemohons\Schemas\PemohonForm;
 use App\Filament\Resources\Pemohons\Schemas\PemohonInfolist;
 use App\Filament\Resources\Pemohons\Tables\PemohonsTable;
 use App\Models\Pemohon;
+use Filament\Actions;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -21,6 +22,8 @@ class   PemohonResource extends Resource
 {
     protected static ?string $model = Pemohon::class;
     protected static ?string $navigationLabel = 'Staff';
+    protected static ?string $pluralLabel = ' UniSHAMS Staff';
+    protected static ?string $label = 'UniSHAMS Staff';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
@@ -61,6 +64,7 @@ class   PemohonResource extends Resource
             'create' => CreatePemohon::route('/create'),
             'view' => ViewPemohon::route('/{record}'),
             'edit' => EditPemohon::route('/{record}/edit'),
+//            'manage-roles' => ManageUserRoles::route('/{record}/manage-roles'),
         ];
     }
 }

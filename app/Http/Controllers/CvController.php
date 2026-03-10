@@ -6,41 +6,11 @@ use App\Models\Pemohon;
 use App\Models\PenyeliaanStaf;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class CvController extends Controller
 {
-    public function generate($staff_id = null)
+    public function generate($staff_id)
     {
-        // Log untuk debugging
-        Log::info('CV Generate started', [
-            'staff_id_param' => $staff_id,
-            'admin_check' => Auth::guard('admin')->check(),
-            'user_check' => Auth::check()
-        ]);
-
-        // Tentukan userId
-        if ($staff_id) {
-            // Admin access
-            if (Auth::guard('admin')->check()) {
-                $userId = $staff_id;
-                Log::info('Admin accessing CV', ['staff_id' => $userId]);
-            } else {
-                Log::warning('Non-admin tried to access staff CV');
-                abort(403, 'Unauthorized access');
-            }
-        } else {
-            // Staff access own CV
-            $userId = Auth::user()->staff_id ?? null;
-            Log::info('Staff accessing own CV', ['user_id' => $userId]);
-
-            if (!$userId) {
-                Log::error('No staff_id found for authenticated user');
-                abort(404, 'Staff not found');
-            }
-        }
-
-        // Cari staff
         $staff = Pemohon::with([
             'gelaran',
             'jabatanStaf',
@@ -52,27 +22,16 @@ class CvController extends Controller
                 $q->with(['authors', 'indexes'])
                     ->orderBy('publish_date', 'desc');
             },
-        ])->where('staff_id', $userId)->first();
+        ])->where('staff_id', $staff_id)->first();
 
-        // CHECK: Staff dijumpai atau tidak
         if (!$staff) {
-            Log::error('Staff not found in database', ['staff_id' => $userId]);
-
-            // Return error view instead of PDF
-            return response()->view('errors.staff-not-found', [
-                'staff_id' => $userId
-            ], 404);
+            abort(404, 'Staff record not found');
         }
 
-        Log::info('Staff found', [
-            'nama' => $staff->nama,
-            'staff_id' => $staff->staff_id
-        ]);
-
         // Get supervisions
-        $supervisions = PenyeliaanStaf::where(function($q) use ($userId) {
-            $q->where('penyelia_utama', $userId)
-                ->orWhere('penyelia_bersama', 'LIKE', "%{$userId}%");
+        $supervisions = PenyeliaanStaf::where(function($q) use ($staff_id) {
+            $q->where('penyelia_utama', $staff_id)
+                ->orWhere('penyelia_bersama', 'LIKE', "%{$staff_id}%");
         })
             ->with('program')
             ->orderBy('idtesis', 'desc')
@@ -109,12 +68,6 @@ class CvController extends Controller
             'masterSupervisions' => $masterSupervisions,
             'degreeSupervisions' => $degreeSupervisions,
         ];
-
-        // Double-check data before sending to view
-        Log::info('Sending data to PDF view', [
-            'staff_exists' => !is_null($data['staff']),
-            'staff_nama' => $data['staff']?->nama
-        ]);
 
         $pdf = Pdf::loadView('pdf.cv', $data);
         $pdf->setPaper('A4', 'portrait');

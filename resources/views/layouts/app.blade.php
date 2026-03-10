@@ -27,62 +27,17 @@
 </head>
 <body class="font-sans antialiased bg-gray-50">
 
-<!-- HEADER - Hover Dropdown dengan Gap -->
+<!-- HEADER -->
 <section class="w-full px-4 sm:px-8 text-gray-500 bg-white" {!! $attributes ?? '' !!}>
     <div class="container flex items-center justify-between py-3 mx-auto max-w-8xl">
 
         {{-- LEFT: Logo --}}
-        <a href="/app" class="flex items-center">
-            <span class="text-xl font-black leading-none text-gray-900 select-none">
+        <div class="flex items-center gap-2">
+            <span class="text-4xl font-black leading-none text-gray-900 select-none">
                 e<span class="text-indigo-600">Talent.</span>
             </span>
-        </a>
-
-        {{-- RIGHT: Profile Section with CSS Dropdown --}}
-        <div class="relative group">
-
-            {{-- Profile Button (dengan extra padding bawah untuk 'jambatan') --}}
-            <div class="flex items-center space-x-2 cursor-pointer pb-2">
-
-                {{-- Nama Ringkas (mobile) / Nama Penuh (desktop) --}}
-                <span class="text-sm font-medium text-gray-700 hidden sm:inline">
-                    {{ Auth::user()->name ?? 'Nama' }}
-                </span>
-                <span class="text-sm font-medium text-gray-700 sm:hidden">
-                    {{ substr(Auth::user()->name ?? 'User', 0, 8) }}{{ strlen(Auth::user()->name ?? '') > 8 ? '...' : '' }}
-                </span>
-
-                {{-- Profile Icon --}}
-                <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold text-sm">
-                    <span>{{ substr(Auth::user()->name ?? 'AD', 0, 2) }}</span>
-                </div>
-
-                {{-- Dropdown Arrow --}}
-                <svg class="w-3 h-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-            </div>
-
-            {{-- Dropdown Menu dengan margin-top negative untuk rapat dengan button --}}
-            <div class="absolute right-0 w-48 bg-white rounded-md shadow-lg py-1 border z-50
-                        invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200
-                        mt-1">
-
-                <a href="{{ route('app.profil') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    <i class="fas fa-user w-4 h-4 inline mr-2"></i>Profile
-                </a>
-
-                <form method="POST" action="{{ route('app.logout') }}">
-                    @csrf
-                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        <i class="fas fa-sign-out-alt w-4 h-4 inline mr-2"></i>Log keluar
-                    </button>
-                </form>
-            </div>
-
-            {{-- Pseudo-element untuk buat 'jambatan' antara button dan dropdown --}}
-            <div class="absolute h-2 w-full invisible group-hover:visible"></div>
         </div>
+
     </div>
 </section>
 

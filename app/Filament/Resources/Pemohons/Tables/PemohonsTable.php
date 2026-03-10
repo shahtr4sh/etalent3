@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\Pemohons\Tables;
 
-use Filament\Actions\Action;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+//use Filament\Tables;
+//use Filament\Tables\Actions\Action;
+//use App\Filament\Resources\Pemohons\PemohonResource;
+use Spatie\Permission\Models\Role;
+use App\Models\User;
 
 class PemohonsTable
 {
@@ -17,38 +17,30 @@ class PemohonsTable
         return $table
             ->columns([
                 TextColumn::make('staff_id')
-                    ->searchable(),
+                    ->label('Staff ID')
+                    ->searchable()
+                    ->url(fn ($record) => route('app.profil.show', ['staff_id' => $record->staff_id]))
+                    ->openUrlInNewTab(),
+
                 TextColumn::make('nama')
-                    ->searchable(),
+                    ->label('Nama')
+                    ->searchable()
+                    ->url(fn ($record) => route('app.profil.show', ['staff_id' => $record->staff_id]))
+                    ->openUrlInNewTab()
+                    ->color('primary'), // clickable look
+
                 TextColumn::make('emel_rasmi')
                     ->searchable(),
-                TextColumn::make('status')
-                    ->searchable(),
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-                Action::make('CV')
-                ->label('CV')
-                ->icon('heroicon-o-document-arrow-down')
-                ->url(fn ($record) => route('admin.staff.cv', ['staff_id' => $record->staff_id]))
-                ->openUrlInNewTab(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 }

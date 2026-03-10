@@ -13,9 +13,8 @@ class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable, HasRoles;
 
-    /**
-     * Filament panel access control
-     */
+    protected $guard_name = 'web';
+
     public function canAccessPanel(Panel $panel): bool
     {
         if ($panel->getId() !== 'admin') {
@@ -25,11 +24,7 @@ class User extends Authenticatable implements FilamentUser
         // Restrict admin panel kepada role tertentu sahaja
         return $this->hasAnyRole([
             'super_admin',
-            'admin sistem',
-            'urusetia',
-            'pengurusan atasan',
             'penyemak',
-            'pelulus'
         ]);
     }
 

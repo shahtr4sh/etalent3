@@ -5,60 +5,81 @@ namespace App\Livewire\App\Profile;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Pemohon;
-use App\Models\PenyeliaanStaf;
 use App\Models\PubAuthor;
 use App\Models\PenerbitanStaf;
+use App\Models\StafMarkah;
+use App\Models\StafPerformance;
+use App\Models\StafTatatertib;
 
 class ShowProfile extends Component
 {
     use WithPagination;
 
     public $pemohon;
-    public $penyeliaan = [];
+    public $penyeliaan = [];           // kekalkan jika masih digunakan tempat lain
+    public $penyeliaanUtama = [];      // ✅ baharu
+    public $penyeliaanBersama = [];    // ✅ baharu
+
     public $staff_id;
-    public $is_admin_view = false;
+    public $performanceEvaluations = [];
     public $searchPenerbitan = '';
+    public $semuaMarkah = [];
+    public $tatatertib = [];
 
     protected $paginationTheme = 'tailwind';
 
-    public function mount($staff_id = null, $is_admin_view = false)
+    public function mount($staff_id)
     {
-        $this->is_admin_view = $is_admin_view;
-
-        if ($this->is_admin_view && $staff_id) {
-            $userId = $staff_id;
-        } else {
-            // Kalau staff login sendiri, guna ID dia
-            $userId = auth()->user()->staff_id ?? null;
-        }
-
-        if (!$userId) {
-            return;
-        }
+        $this->staff_id = $staff_id;
 
         $this->pemohon = Pemohon::with([
             'gelaran',
-            'akademikStaf' => function ($q) {
-                $q->orderByDesc('tahun_tamat')->orderByDesc('kod_tahap');
-            },
+            'akademikStaf' => fn ($q) => $q->orderByDesc('tahun_tamat')->orderByDesc('kod_tahap'),
             'jabatanStaf',
-            'jawatanStaf' => function ($q) {
-                $q->orderByDesc('terkini')->orderByDesc('aktif');
-            },
+            'jawatanStaf' => fn ($q) => $q->orderByDesc('terkini')->orderByDesc('aktif'),
             'jawatanStafTerkini',
             'markahTerkini',
-        ])->where('staff_id', $userId)->first();
+        ])->where('staff_id', $this->staff_id)->first();
+
+        if (!$this->pemohon) {
+            abort(404, 'Staff tidak dijumpai');
+        }
+
+        $this->semuaMarkah = StafMarkah::where('no_staf', $this->staff_id)
+            ->orderBy('tahun_markah', 'desc')
+            ->get();
 
         $this->loadPenyeliaan();
+
+        $this->performanceEvaluations = StafPerformance::where('no_staf', $this->staff_id)
+            ->orderBy('year', 'desc')
+            ->get();
+
+        $this->tatatertib = StafTatatertib::where('no_staf', $this->staff_id)
+            ->orderBy('tarikh_conduct', 'desc')
+            ->get();
     }
 
-    private function loadPenyeliaan()
+    private function loadPenyeliaan(): void
     {
         if (!$this->pemohon) {
             return;
         }
 
-        $this->penyeliaan = $this->pemohon->penyeliaan_list;
+        // Ambil semua tesis yang melibatkan staf ini (seperti sedia ada)
+        $list = $this->pemohon->penyeliaan_list;
+
+        if (method_exists($list, 'load')) {
+            $list->load('program');
+        }
+
+        $this->penyeliaan = $list;
+
+        // Asingkan jenis penyeliaan
+        $staffId = $this->pemohon->staff_id;
+
+        $this->penyeliaanUtama   = $list->filter(fn ($tesis) => $tesis->isPenyeliaUtama($staffId))->values();
+        $this->penyeliaanBersama = $list->filter(fn ($tesis) => $tesis->isPenyeliaBersama($staffId))->values();
     }
 
     public function updatingSearchPenerbitan()
@@ -68,7 +89,6 @@ class ShowProfile extends Component
 
     public function render()
     {
-        // Get publications data
         $penerbitan = collect([]);
         $totalPenerbitan = 0;
 
@@ -81,16 +101,18 @@ class ShowProfile extends Component
 
             $penerbitan = PenerbitanStaf::whereIn('id', $pubIds)
                 ->with(['authors', 'indexes'])
+                ->orderBy('type', 'asc')
                 ->orderBy('publish_date', 'desc')
-                ->take(5)
                 ->get();
         }
 
         return view('livewire.app.profile.show-profile', [
-            'pemohon' => $this->pemohon,
-            'penyeliaan' => $this->penyeliaan,
-            'penerbitan' => $penerbitan,
-            'totalPenerbitan' => $totalPenerbitan
+            'pemohon'          => $this->pemohon,
+            'penyeliaan'       => $this->penyeliaan,
+            'penyeliaanUtama'  => $this->penyeliaanUtama,
+            'penyeliaanBersama'=> $this->penyeliaanBersama,
+            'penerbitan'       => $penerbitan,
+            'totalPenerbitan'  => $totalPenerbitan,
         ]);
     }
 }

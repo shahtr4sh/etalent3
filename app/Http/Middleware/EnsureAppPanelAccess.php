@@ -15,7 +15,5 @@ class EnsureAppPanelAccess
         if ($user && $user->hasRole('pemohon')) {
             return $next($request);
         }
-
-        abort(403);
     }
 }
