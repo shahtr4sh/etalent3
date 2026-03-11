@@ -9,6 +9,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 
@@ -22,24 +23,47 @@ class PemohonResource extends Resource
     {
         return $schema
             ->components([
-                Section::make('Maklumat Pemohon')
+                Section::make('Staff Information')
                     ->schema([
+                        FileUpload::make('gambar_profil')
+                            ->label('Profile Picture')
+                            ->image()
+                            ->directory('profile-pictures') // Folder dalam storage
+                            ->disk('public') // Guna public disk
+                            ->visibility('public')
+                            ->maxSize(2048),
+
+
                         TextInput::make('staff_id')
                             ->label('Staff ID')
                             ->required()
-                            ->maxLength(255)
                             ->disabled(),
 
                         TextInput::make('nama')
-                            ->label('Nama')
+                            ->label('Name')
                             ->required()
                             ->maxLength(255),
 
                         TextInput::make('emel_rasmi')
-                            ->label('Emel Rasmi')
+                            ->label('Official Email')
                             ->email()
-                            ->required()
                             ->maxLength(255),
+
+                        TextInput::make('no_telefon')
+                            ->label('Contact Number')
+                            ->maxLength(255),
+
+                        Select::make('status')
+                            ->label('Status')
+                            ->options([
+                                'A' => 'Aktif',
+                                'SB' => 'Bercuti',
+                                'C' => 'Dipinjamkan',
+                                'P' => 'Sambung Belajar Tanpa Tajaan',
+                                'S' => 'Sambung Belajar Dengan Tajaan Yuran',
+                                'T' => 'Tamat Perkhidmatan',
+                            ])
+                            ->native(false),
 
                         Select::make('role_name')
                             ->label('Role')
@@ -51,7 +75,7 @@ class PemohonResource extends Resource
                             ->required()
                             ->native(false)
                             ->default('none')
-                            ->afterStateHydrated(function (Select $component, ?\App\Models\Pemohon $record): void {
+                            ->afterStateHydrated(function (Select $component, ?Pemohon $record): void {
                                 if (! $record) {
                                     $component->state('none');
                                     return;

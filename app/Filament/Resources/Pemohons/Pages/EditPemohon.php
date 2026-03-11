@@ -11,10 +11,14 @@ class EditPemohon extends EditRecord
     protected static string $resource = PemohonResource::class;
 
     protected ?string $selectedRoleToSync = null;
+    protected ?string $nameToSync = null;
+    protected ?string $emailToSync = null;
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $this->selectedRoleToSync = $data['role_name'] ?? 'none';
+        $this->nameToSync = $data['nama'] ?? null;
+        $this->emailToSync = $data['emel_rasmi'] ?? null;
 
         unset($data['role_name']);
 
@@ -27,13 +31,23 @@ class EditPemohon extends EditRecord
 
         if (! $user) {
             Notification::make()
-                ->title('Rekod user tidak dijumpai')
-                ->body('Role tidak dapat dikemaskini kerana user bagi staff ini tidak wujud.')
-                ->danger()
+                ->title('Data pemohon berjaya dikemaskini')
+                ->body('Tetapi user berkaitan tidak dijumpai, jadi role tidak dapat dikemaskini.')
+                ->warning()
                 ->send();
 
             return;
         }
+
+        if ($this->nameToSync !== null) {
+            $user->name = $this->nameToSync;
+        }
+
+        if ($this->emailToSync !== null) {
+            $user->email = $this->emailToSync;
+        }
+
+        $user->save();
 
         $selectedRole = $this->selectedRoleToSync ?? 'none';
 
@@ -43,11 +57,8 @@ class EditPemohon extends EditRecord
             $user->syncRoles([$selectedRole]);
         }
 
-        $user->refresh();
-
         Notification::make()
-            ->title('Role berjaya dikemaskini')
-            ->body('Role semasa: ' . ($selectedRole === 'none' ? 'Tiada Role' : $selectedRole))
+            ->title('Data pemohon dan role berjaya dikemaskini')
             ->success()
             ->send();
     }
