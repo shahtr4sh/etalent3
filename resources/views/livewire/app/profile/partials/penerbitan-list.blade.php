@@ -1,6 +1,6 @@
 @if($penerbitan->isEmpty())
     <div class="bg-gray-50 rounded-lg p-8 text-center">
-        <p class="text-gray-500 italic">Tiada rekod penerbitan.</p>
+        <p class="text-gray-500 italic">No publication record.</p>
     </div>
 @else
     <div class="space-y-3">

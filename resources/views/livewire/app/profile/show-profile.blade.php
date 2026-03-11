@@ -356,9 +356,9 @@
             {{-- REKOD PENERBITAN MENGIKUT JENIS --}}
             <div class="mt-8">
                 <div class="flex items-center gap-3 mb-3">
-                    <h2 class="text-lg font-semibold">Penerbitan</h2>
+                    <h2 class="text-lg font-semibold">Publications</h2>
                     <span class="bg-purple-100 text-purple-800 text-sm font-medium px-3 py-1 rounded-full">
-            {{ $totalPenerbitan }} Jumlah
+            {{ $totalPenerbitan }} Publications
         </span>
                 </div>
                 <hr class="mb-4">

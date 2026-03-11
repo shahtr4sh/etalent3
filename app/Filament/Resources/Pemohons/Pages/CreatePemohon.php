@@ -12,7 +12,6 @@ class CreatePemohon extends CreateRecord
 
     protected function afterCreate(): void
     {
-        // Open new tab with JavaScript
         $this->dispatch('open-profile', staffId: $this->record->staff_id);
 
         $selectedRole = $this->form->getState()['role_name'] ?? 'none';
@@ -21,8 +20,7 @@ class CreatePemohon extends CreateRecord
 
         if (! $user) {
             Notification::make()
-                ->title('Rekod user tidak dijumpai berdasarkan staff_id')
-                ->body('Pemohon berjaya dicipta tetapi role tidak dapat ditetapkan.')
+                ->title('Pemohon berjaya dicipta')
                 ->warning()
                 ->send();
             return;

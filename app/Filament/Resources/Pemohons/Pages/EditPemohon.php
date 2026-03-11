@@ -32,7 +32,6 @@ class EditPemohon extends EditRecord
         if (! $user) {
             Notification::make()
                 ->title('Data pemohon berjaya dikemaskini')
-                ->body('Tetapi user berkaitan tidak dijumpai, jadi role tidak dapat dikemaskini.')
                 ->warning()
                 ->send();
 

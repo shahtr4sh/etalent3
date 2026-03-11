@@ -28,27 +28,18 @@ class PemohonResource extends Resource
                             ->label('Profile Picture')
                             ->image()
                             ->disk('public')
-                            ->directory('./profile-pictures')
+                            ->directory('profile-pictures')
                             ->visibility('public')
+                            ->previewable(true)
                             ->imagePreviewHeight('150')
-                            ->downloadable()
-                            ->openable()
+                            ->fetchFileInformation(false)
                             ->deletable()
                             ->removeUploadedFileButtonPosition('right')
                             ->getUploadedFileNameForStorageUsing(function ($file) {
-                                // Rename file with timestamp to avoid conflicts
                                 return time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
                             })
-                            ->deleteUploadedFileUsing(function ($file) {
-                                // Custom delete logic
-                                if ($file && \Storage::disk('public')->exists($file)) {
-                                    \Storage::disk('public')->delete($file);
-                                    return true;
-                                }
-                                return false;
-                            })
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif'])
-                            ->maxSize(2048) // 2MB max
+                            ->maxSize(2048)
                             ->columnSpanFull(),
 
                         TextInput::make('staff_id')
