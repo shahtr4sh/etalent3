@@ -5,18 +5,17 @@ namespace App\Filament\Resources\Pemohons;
 use App\Filament\Resources\Pemohons\Pages;
 use App\Filament\Resources\Pemohons\Tables\PemohonsTable;
 use App\Models\Pemohon;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 
 class PemohonResource extends Resource
 {
     protected static ?string $model = Pemohon::class;
-
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-users';
 
     public static function form(Schema $schema): Schema
@@ -28,11 +27,29 @@ class PemohonResource extends Resource
                         FileUpload::make('gambar_profil')
                             ->label('Profile Picture')
                             ->image()
-                            ->directory('profile-pictures') // Folder dalam storage
-                            ->disk('public') // Guna public disk
+                            ->disk('public')
+                            ->directory('./profile-pictures')
                             ->visibility('public')
-                            ->maxSize(2048),
-
+                            ->imagePreviewHeight('150')
+                            ->downloadable()
+                            ->openable()
+                            ->deletable()
+                            ->removeUploadedFileButtonPosition('right')
+                            ->getUploadedFileNameForStorageUsing(function ($file) {
+                                // Rename file with timestamp to avoid conflicts
+                                return time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
+                            })
+                            ->deleteUploadedFileUsing(function ($file) {
+                                // Custom delete logic
+                                if ($file && \Storage::disk('public')->exists($file)) {
+                                    \Storage::disk('public')->delete($file);
+                                    return true;
+                                }
+                                return false;
+                            })
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif'])
+                            ->maxSize(2048) // 2MB max
+                            ->columnSpanFull(),
 
                         TextInput::make('staff_id')
                             ->label('Staff ID')

@@ -16,9 +16,17 @@ class ShowProfile extends Component
     use WithPagination;
 
     public $pemohon;
-    public $penyeliaan = [];           // kekalkan jika masih digunakan tempat lain
-    public $penyeliaanUtama = [];      // ✅ baharu
-    public $penyeliaanBersama = [];    // ✅ baharu
+    public $penyeliaan = [];
+    public $penyeliaanUtama = [];
+    public $penyeliaanBersama = [];
+
+    // Properties untuk penerbitan ikut jenis
+    public $penerbitanJournal = [];
+    public $penerbitanBook = [];
+    public $penerbitanChapter = [];
+    public $penerbitanProceeding = [];
+    public $penerbitanOther = [];
+    public $totalPenerbitan = 0;
 
     public $staff_id;
     public $performanceEvaluations = [];
@@ -50,6 +58,7 @@ class ShowProfile extends Component
             ->get();
 
         $this->loadPenyeliaan();
+        $this->loadPenerbitan(); // ✅ PANGGIL METHOD BARU
 
         $this->performanceEvaluations = StafPerformance::where('no_staf', $this->staff_id)
             ->orderBy('year', 'desc')
@@ -66,7 +75,6 @@ class ShowProfile extends Component
             return;
         }
 
-        // Ambil semua tesis yang melibatkan staf ini (seperti sedia ada)
         $list = $this->pemohon->penyeliaan_list;
 
         if (method_exists($list, 'load')) {
@@ -75,11 +83,75 @@ class ShowProfile extends Component
 
         $this->penyeliaan = $list;
 
-        // Asingkan jenis penyeliaan
         $staffId = $this->pemohon->staff_id;
 
         $this->penyeliaanUtama   = $list->filter(fn ($tesis) => $tesis->isPenyeliaUtama($staffId))->values();
         $this->penyeliaanBersama = $list->filter(fn ($tesis) => $tesis->isPenyeliaBersama($staffId))->values();
+    }
+
+    /**
+     * Load and group publications by type
+     */
+    private function loadPenerbitan(): void
+    {
+        if (!$this->pemohon) {
+            return;
+        }
+
+        $pubIds = PubAuthor::where('nostaf', $this->pemohon->staff_id)
+            ->pluck('pub_item_id')
+            ->unique();
+
+        $this->totalPenerbitan = PenerbitanStaf::whereIn('id', $pubIds)->count();
+
+        // Get all publications with relationships
+        $allPublications = PenerbitanStaf::whereIn('id', $pubIds)
+            ->with(['authors', 'indexes'])
+            ->orderBy('publish_date', 'desc')
+            ->get();
+
+        // Group by type (using lowercase for consistency)
+        $this->penerbitanJournal = $allPublications->filter(fn ($pub) =>
+            strtolower($pub->type) === 'journal'
+        )->values();
+
+        $this->penerbitanBook = $allPublications->filter(fn ($pub) =>
+            strtolower($pub->type) === 'book'
+        )->values();
+
+        $this->penerbitanChapter = $allPublications->filter(fn ($pub) =>
+            strtolower($pub->type) === 'book_chapter' ||
+            strtolower($pub->type) === 'chapter-in-book'
+        )->values();
+
+        $this->penerbitanProceeding = $allPublications->filter(fn ($pub) =>
+            strtolower($pub->type) === 'proceeding'
+        )->values();
+
+        // Everything else goes to Other
+        $this->penerbitanOther = $allPublications->filter(fn ($pub) =>
+        !in_array(strtolower($pub->type), [
+            'journal',
+            'book',
+            'book_chapter',
+            'chapter-in-book',
+            'proceeding',
+        ])
+        )->values();
+    }
+
+    /**
+     * Get publication by type
+     */
+    public function getPenerbitanByType($type)
+    {
+        return match($type) {
+            'journal' => $this->penerbitanJournal,
+            'book' => $this->penerbitanBook,
+            'chapter-in-book' => $this->penerbitanChapter,
+            'proceeding' => $this->penerbitanProceeding,
+            default => $this->penerbitanOther,
+        };
     }
 
     public function updatingSearchPenerbitan()
@@ -89,30 +161,17 @@ class ShowProfile extends Component
 
     public function render()
     {
-        $penerbitan = collect([]);
-        $totalPenerbitan = 0;
-
-        if ($this->pemohon) {
-            $pubIds = PubAuthor::where('nostaf', $this->pemohon->staff_id)
-                ->pluck('pub_item_id')
-                ->unique();
-
-            $totalPenerbitan = PenerbitanStaf::whereIn('id', $pubIds)->count();
-
-            $penerbitan = PenerbitanStaf::whereIn('id', $pubIds)
-                ->with(['authors', 'indexes'])
-                ->orderBy('type', 'asc')
-                ->orderBy('publish_date', 'desc')
-                ->get();
-        }
-
         return view('livewire.app.profile.show-profile', [
             'pemohon'          => $this->pemohon,
             'penyeliaan'       => $this->penyeliaan,
             'penyeliaanUtama'  => $this->penyeliaanUtama,
             'penyeliaanBersama'=> $this->penyeliaanBersama,
-            'penerbitan'       => $penerbitan,
-            'totalPenerbitan'  => $totalPenerbitan,
+            'penerbitanJournal' => $this->penerbitanJournal,
+            'penerbitanBook'    => $this->penerbitanBook,
+            'penerbitanChapter' => $this->penerbitanChapter,
+            'penerbitanProceeding' => $this->penerbitanProceeding,
+            'penerbitanOther'   => $this->penerbitanOther,
+            'totalPenerbitan'   => $this->totalPenerbitan,
         ]);
     }
 }

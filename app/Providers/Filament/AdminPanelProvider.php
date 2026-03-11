@@ -11,7 +11,6 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
 use Filament\PanelProvider;
-use App\Filament\Pages\ManagePenyemakRole;
 use Filament\Pages;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
@@ -31,9 +30,6 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->pages([
-                ManagePenyemakRole::class,
-            ])
             ->resources([
                 PemohonResource::class,
                 PromotionApplicationResource::class,

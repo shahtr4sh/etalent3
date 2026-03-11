@@ -242,7 +242,7 @@
                         @foreach($tatatertib as $record)
                             <div class="bg-white border-l-4 border-red-400 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
                                 <div class="flex items-start gap-3">
-                                    <div class="flex-shrink-0">
+                                    <div class="shrink-0">
                                         <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
                                             <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
@@ -353,62 +353,71 @@
                 </div>
             </div>
 
-            {{-- REKOD PENERBITAN --}}
+            {{-- REKOD PENERBITAN MENGIKUT JENIS --}}
             <div class="mt-8">
                 <div class="flex items-center gap-3 mb-3">
-                    <h2 class="text-lg font-semibold">Publications</h2>
+                    <h2 class="text-lg font-semibold">Penerbitan</h2>
                     <span class="bg-purple-100 text-purple-800 text-sm font-medium px-3 py-1 rounded-full">
-                        {{ $totalPenerbitan }} Publications
-                    </span>
+            {{ $totalPenerbitan }} Jumlah
+        </span>
                 </div>
                 <hr class="mb-4">
-                @if($penerbitan->isNotEmpty())
-                    <div class="overflow-x-auto border rounded-lg">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Publish Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Index</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
-                            </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach($penerbitan as $pub)
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 text-sm" colspan="2">
-                                        <div>
-                                            {{ $pub->formatted_authors }}
-                                            ({{ $pub->tahun ?? 'n.d.' }}).
-                                            {{ $pub->formatted_title }}
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex flex-wrap gap-1">
-                                            @forelse($pub->indexes as $index)
-                                                <span class="inline-block px-2 py-1 text-xs rounded-full bg-{{ $index->name == 'WOS' ? 'red' : ($index->name == 'Scopus' ? 'blue' : 'gray') }}-100 text-{{ $index->name == 'WOS' ? 'red' : ($index->name == 'Scopus' ? 'blue' : 'gray') }}-800">
-                                                    {{ $index->name }}
-                                                </span>
-                                            @empty
-                                                <span class="text-gray-400 text-xs">-</span>
-                                            @endforelse
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm whitespace-nowrap">
-                                        <span class="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-800">
-                                            {{ ucfirst(str_replace('_', ' ', $pub->type ?? 'other')) }}
-                                        </span>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
+
+                {{-- Tabs untuk jenis penerbitan --}}
+                <div x-data="{ tab: 'journal' }" class="mb-4">
+                    <div class="flex flex-wrap gap-2 border-b pb-2 mb-4">
+                        <button @click="tab = 'journal'"
+                                :class="{ 'bg-purple-100 text-purple-800': tab === 'journal' }"
+                                class="px-3 py-1 text-sm rounded-full transition">
+                            📚 Journal ({{ $penerbitanJournal->count() }})
+                        </button>
+                        <button @click="tab = 'book'"
+                                :class="{ 'bg-purple-100 text-purple-800': tab === 'book' }"
+                                class="px-3 py-1 text-sm rounded-full transition">
+                            📖 Book ({{ $penerbitanBook->count() }})
+                        </button>
+                        <button @click="tab = 'chapter'"
+                                :class="{ 'bg-purple-100 text-purple-800': tab === 'chapter' }"
+                                class="px-3 py-1 text-sm rounded-full transition">
+                            📑 Chapter ({{ $penerbitanChapter->count() }})
+                        </button>
+                        <button @click="tab = 'proceeding'"
+                                :class="{ 'bg-purple-100 text-purple-800': tab === 'proceeding' }"
+                                class="px-3 py-1 text-sm rounded-full transition">
+                            📎 Proceeding ({{ $penerbitanProceeding->count() }})
+                        </button>
+                        <button @click="tab = 'other'"
+                                :class="{ 'bg-purple-100 text-purple-800': tab === 'other' }"
+                                class="px-3 py-1 text-sm rounded-full transition">
+                            📄 Other ({{ $penerbitanOther->count() }})
+                        </button>
                     </div>
-                @else
-                    <div class="bg-gray-50 rounded-lg p-8 text-center">
-                        <p class="text-gray-500 italic">No publication record.</p>
+
+                    {{-- Journal --}}
+                    <div x-show="tab === 'journal'">
+                        @include('livewire.app.profile.partials.penerbitan-list', ['penerbitan' => $penerbitanJournal])
                     </div>
-                @endif
+
+                    {{-- Book --}}
+                    <div x-show="tab === 'book'">
+                        @include('livewire.app.profile.partials.penerbitan-list', ['penerbitan' => $penerbitanBook])
+                    </div>
+
+                    {{-- Chapter --}}
+                    <div x-show="tab === 'chapter'">
+                        @include('livewire.app.profile.partials.penerbitan-list', ['penerbitan' => $penerbitanChapter])
+                    </div>
+
+                    {{-- Proceeding --}}
+                    <div x-show="tab === 'proceeding'">
+                        @include('livewire.app.profile.partials.penerbitan-list', ['penerbitan' => $penerbitanProceeding])
+                    </div>
+
+                    {{-- Other --}}
+                    <div x-show="tab === 'other'">
+                        @include('livewire.app.profile.partials.penerbitan-list', ['penerbitan' => $penerbitanOther])
+                    </div>
+                </div>
             </div>
         @endif
     </div>

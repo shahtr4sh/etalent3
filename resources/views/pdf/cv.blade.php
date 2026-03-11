@@ -49,16 +49,16 @@
         }
         .header {
             margin-bottom: 15px;
-            border-bottom: 2px solid #2c3e50;
+            border-bottom: 1px solid #2c3e50;
             padding-bottom: 15px;
         }
         .header h1 {
             margin: 0 0 5px 0;
-            font-size: 16pt;
+            font-size: 12pt;
             color: #2c3e50;
         }
         .header .subtitle {
-            font-size: 12pt;
+            font-size: 10pt;
             color: #7f8c8d;
             margin: 2px 0;
         }
@@ -76,7 +76,7 @@
         }
         .content-item {
             margin-bottom: 8px;
-            font-size: 10pt;
+            font-size: 9pt;
             line-height: 1.5;
         }
         .academic-item {
@@ -106,9 +106,15 @@
 <body>
 
 {{-- HEADER --}}
-<div class="header" >
+<div style="margin-bottom: 24px;">
+
+    <div style="background-color: #8B5CF6; color: white; padding: 2px; margin: -5px -55px; width: calc(100% + 120px);">
+        <div style="padding-left: 25px; padding-right: 25px;">
+            <span style="font-weight: bold; text-transform: uppercase; font-size: 12pt;">Information</span>
+        </div>
+    </div>
     {{-- Profile Image --}}
-    <div class="profile-image">
+    <div class="profile-image" style="margin-top: 20px;">
         @if(!empty($profileImage))
             <img src="{{ $profileImage }}" alt="">
         @else
@@ -120,36 +126,50 @@
 
     {{-- Info --}}
     <div style="flex:1;">
-        <h1 style="margin:0 0 5px 0;">{{ $staff->nama_dengan_gelaran }}</h1>
-        <div style="font-size:12pt; margin:2px 0;">
-            {{ $staff->jawatanStafTerkini->nama_jawatan ?? 'N/A' }} ({{ $staff->jawatanStafTerkini->gred_jawatan ?? 'N/A' }})
+        <h1 style="font-size:12pt; margin:0 0 5px 0;">{{ $staff->nama_dengan_gelaran }}</h1>
+        <div style="font-size:10pt; margin:2px 0;">
+            {{ $staff->jawatanStafTerkini->nama_jawatan ?? 'N/A' }}
         </div>
-        <div style="font-size:12pt; margin:2px 0;">
+        <div style="font-size:10pt; margin:2px 0;">
             {{ $staff->jabatanStaf->nama_jabatan ?? 'N/A' }}
         </div>
-        <div style="font-size:12pt; margin:2px 0;">
+        <div style="font-size:10pt; margin:2px 0;">
             {{ $staff->emel_rasmi ?? 'N/A'}}
         </div>
     </div>
 </div>
 
 {{-- 1. ACADEMIC QUALIFICATION --}}
-<div class="section">
-    <div class="section-title">Academic Qualification</div>
-    @forelse($staff->akademikStaf as $akademik)
-        <div class="content-item academic-item">
-            {{ $akademik->kod_bidang ?? '' }},
-            {{ $akademik->tahap_akademik ?? 'N/A' }},
-            {{ $akademik->tahun_tamat ?? 'N/A' }}
+<div style="margin-bottom: 25px;">
+    <div style="background-color: #8B5CF6; color: white; padding: 2px; margin: -5px -55px; width: calc(100% + 120px);">
+        <div style="padding-left: 25px; padding-right: 25px;">
+            <span style="font-weight: bold; text-transform: uppercase; font-size: 12pt;">Academic Qualification</span>
         </div>
-    @empty
-        <div class="content-item">No academic records found.</div>
-    @endforelse
+    </div>
+
+    {{-- CONTENT --}}
+    <div style="margin-top: 12px;">
+        @forelse($staff->akademikStaf as $akademik)
+            <div class="content-item academic-item">
+                {{ $akademik->kod_bidang ?? '' }},
+                {{ $akademik->tahap_akademik ?? 'N/A' }},
+                {{ $akademik->tahun_tamat ?? 'N/A' }}
+            </div>
+        @empty
+            <div class="content-item">No academic records found.</div>
+        @endforelse
+    </div>
 </div>
 
 {{-- 2. PUBLICATIONS (APA Format) --}}
-<div class="section">
-    <div class="section-title">Publications</div>
+<div style="margin-bottom: 25px;">
+    <div style="background-color: #8B5CF6; color: white; padding: 2px; margin: -5px -55px; width: calc(100% + 120px);">
+        <div style="padding-left: 25px; padding-right: 25px;">
+            <span style="font-weight: bold; text-transform: uppercase; font-size: 12pt;">Publications</span>
+        </div>
+    </div>
+    {{-- CONTENT --}}
+    <div style="margin-top: 12px;">
     @forelse($staff->penerbitan as $pub)
         <div class="content-item publication-item">
             {{ $pub->formatted_authors }}
@@ -159,12 +179,18 @@
     @empty
         <div class="content-item">No publications found.</div>
     @endforelse
+    </div>
 </div>
 
 {{-- 3. SUPERVISION --}}
 <div class="section">
-    <div class="section-title">Supervision</div>
+    <div style="background-color: #8B5CF6; color: white; padding: 2px; margin: -5px -55px; width: calc(100% + 120px);">
+        <div style="padding-left: 25px; padding-right: 25px;">
+            <span style="font-weight: bold; text-transform: uppercase; font-size: 12pt;">Supervision</span>
+        </div>
+    </div>
 
+    <div style="margin-top: 12px;">
     {{-- PhD/Doctoral Students --}}
     @if($phdSupervisions->count() > 0)
         @foreach($phdSupervisions as $sup)
@@ -207,6 +233,7 @@
     @if($phdSupervisions->isEmpty() && $masterSupervisions->isEmpty() && $degreeSupervisions->isEmpty())
         <div class="content-item">No supervision records found.</div>
     @endif
+    </div>
 </div>
 
 <footer>

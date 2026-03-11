@@ -6,6 +6,7 @@ use App\Models\Pemohon;
 use App\Models\PenyeliaanStaf;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class CvController extends Controller
 {
