@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Pemohon extends Model
 {
@@ -15,6 +16,27 @@ class Pemohon extends Model
     public function gelaran()
     {
         return $this->belongsTo(GelaranV::class, 'kod_gelaran', 'kodgelaran');
+    }
+
+    public function statusJawatan()
+    {
+        return $this->belongsTo(StatusJawatan::class, 'status', 'kodStatus');
+    }
+
+    /**
+     * Get status label
+     */
+    public function getStatusLabelAttribute()
+    {
+        return $this->statusJawatan?->status ?? $this->status;
+    }
+
+    /**
+     * Check if staff is active
+     */
+    public function getIsStaffActiveAttribute()
+    {
+        return $this->statusJawatan?->masih_staf == 1;
     }
 
     public function getNamaDenganGelaranAttribute()
@@ -183,10 +205,18 @@ class Pemohon extends Model
             ->orderBy('created_at', 'desc');
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'staff_id';
+    }
 
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class, 'staff_id', 'staff_id');
+    }
 
     protected $fillable = [
-        'staff_id','kod_gelaran','nama','gred_semasa','jawatan_semasa',
-        'ptj_fakulti','jabatan','emel_rasmi','no_telefon'
+        'staff_id','kod_gelaran','gambar_profil','nama','gred_semasa','jawatan_semasa',
+        'ptj_fakulti','jabatan','emel_rasmi','no_telefon', 'status', 'is_active',
     ];
 }

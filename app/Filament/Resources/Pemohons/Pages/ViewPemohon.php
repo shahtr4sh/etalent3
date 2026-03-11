@@ -19,27 +19,14 @@ class ViewPemohon extends ViewRecord
         return [
             Actions\EditAction::make()->label('Edit Staf'),
 
-            // ✅ Action Tetapkan Role
+            // Assign role for staff
             Actions\Action::make('assignRole')
                 ->label('Tetapkan Role')
                 ->icon('heroicon-m-user-plus')
                 ->color('info')
-                ->form([
-                    Forms\Components\Select::make('role')
-                        ->label('Pilih Role')
-                        ->options(fn () => Role::query()
-                            ->where('guard_name', 'web')
-                            ->orderBy('name')
-                            ->pluck('name', 'name')
-                            ->toArray()
-                        )
-                        ->searchable()
-                        ->required(),
-                ])
                 ->action(function (array $data) {
                     $pemohon = $this->record;
 
-                    // ✔️ Cari User berdasarkan 'staff_id' (ubah jika anda guna padanan lain, e.g. email)
                     $user = User::where('staff_id', $pemohon->staff_id)->first();
 
                     if (!$user) {

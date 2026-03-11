@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Pemohons\Pages;
 
 use App\Filament\Resources\Pemohons\PemohonResource;
-use Filament\Actions\CreateAction;
+use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 class ListPemohons extends ListRecords
@@ -13,7 +13,7 @@ class ListPemohons extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            Actions\CreateAction::make(),
         ];
     }
 }

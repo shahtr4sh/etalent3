@@ -4,11 +4,9 @@ namespace App\Filament\Resources\Pemohons\Tables;
 
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-//use Filament\Tables;
-//use Filament\Tables\Actions\Action;
-//use App\Filament\Resources\Pemohons\PemohonResource;
-use Spatie\Permission\Models\Role;
-use App\Models\User;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
+use Filament\Actions\ActionGroup;
 
 class PemohonsTable
 {
@@ -27,20 +25,32 @@ class PemohonsTable
                     ->searchable()
                     ->url(fn ($record) => route('app.profil.show', ['staff_id' => $record->staff_id]))
                     ->openUrlInNewTab()
-                    ->color('primary'), // clickable look
+                    ->color('primary'),
 
                 TextColumn::make('emel_rasmi')
+                    ->label('Emel Rasmi')
                     ->searchable(),
 
                 TextColumn::make('created_at')
+                    ->label('Created At')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_at')
+                    ->label('Updated At')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ]);
+            ])
+            ->actions([
+                EditAction::make()
+                    ->label('Edit')
+                    ->icon('heroicon-m-pencil-square')
+                    ->color('warning')
+                    ->modalHeading('Edit Data Staf')
+                    ->modalWidth('lg'),
+            ])
+            ->bulkActions([]);
     }
 }
