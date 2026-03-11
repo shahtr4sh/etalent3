@@ -34,7 +34,7 @@ class CreatePemohon extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
-        return PemohonResource::getUrl('index');
+        return PemohonResource::getUrl('');
     }
 
     public function mount(): void

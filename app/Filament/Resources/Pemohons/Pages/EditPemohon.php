@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Pemohons\Pages;
 
 use App\Filament\Resources\Pemohons\PemohonResource;
+use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 
@@ -13,6 +14,23 @@ class EditPemohon extends EditRecord
     protected ?string $selectedRoleToSync = null;
     protected ?string $nameToSync = null;
     protected ?string $emailToSync = null;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\DeleteAction::make()
+                ->label('Delete User Account')
+                ->icon('heroicon-o-trash')
+                ->color('danger')
+                ->requiresConfirmation()
+                ->modalHeading('Delete User Account')
+                ->modalDescription('Are you sure you want to delete this user account? This action cannot be undone.')
+                ->modalSubmitActionLabel('Yes, delete account')
+                ->action(function () {
+                    $this->record->delete();
+                }),
+        ];
+    }
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
@@ -34,6 +52,7 @@ class EditPemohon extends EditRecord
                 ->title('Data pemohon berjaya dikemaskini')
                 ->warning()
                 ->send();
+
 
             return;
         }
@@ -60,5 +79,12 @@ class EditPemohon extends EditRecord
             ->title('Data pemohon dan role berjaya dikemaskini')
             ->success()
             ->send();
+
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return PemohonResource::getUrl('');
+    }
+
 }

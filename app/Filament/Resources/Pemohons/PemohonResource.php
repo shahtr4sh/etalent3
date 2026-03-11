@@ -44,8 +44,7 @@ class PemohonResource extends Resource
 
                         TextInput::make('staff_id')
                             ->label('Staff ID')
-                            ->required()
-                            ->disabled(),
+                            ->required(),
 
                         TextInput::make('nama')
                             ->label('Name')

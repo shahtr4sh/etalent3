@@ -51,6 +51,6 @@ class PemohonsTable
                     ->modalHeading('Edit Data Staf')
                     ->modalWidth('lg'),
             ])
-            ->bulkActions([]);
+            ->defaultSort('created_at', 'desc');
     }
 }
