@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\SwitchSessionCookie;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,16 +14,20 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function ($middleware) {
 
-        $middleware->redirectGuestsTo(function (Request $request) {
-
-            // Jika cuba akses /app route
-            if ($request->is('app') || $request->is('app/*')) {
-                return route('app.login');
-            }
-
-            // Selain itu (admin / filament)
-            return route('login');
-        });
+//        $middleware->web(prepend: [
+//            \App\Http\Middleware\SwitchSessionCookie::class,
+//        ]);
+//
+//        $middleware->redirectGuestsTo(function (Request $request) {
+//
+//            // Jika cuba akses /app route
+//            if ($request->is('app') || $request->is('app/*')) {
+//                return route('app.login');
+//            }
+//
+//            // Selain itu (admin / filament)
+//            return route('login');
+//        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -8,37 +8,35 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Pemohon extends Model
 {
     protected $table = 'pemohon';
-
     protected $primaryKey = 'staff_id';
     public $incrementing = false;
     protected $keyType = 'string';
 
+    // Get Gelaran
     public function gelaran()
     {
         return $this->belongsTo(GelaranV::class, 'kod_gelaran', 'kodgelaran');
     }
 
+    // Get Status Jawatan
     public function statusJawatan()
     {
         return $this->belongsTo(StatusJawatan::class, 'status', 'kodStatus');
     }
 
-    /**
-     * Get status label
-     */
+    // Get Status Label
     public function getStatusLabelAttribute()
     {
         return $this->statusJawatan?->status ?? $this->status;
     }
 
-    /**
-     * Check if staff is active
-     */
+    // Get Staff Active Status
     public function getIsStaffActiveAttribute()
     {
         return $this->statusJawatan?->masih_staf == 1;
     }
 
+    // Get Nama Dengan Gelaran
     public function getNamaDenganGelaranAttribute()
     {
         if ($this->gelaran) {
@@ -47,25 +45,32 @@ class Pemohon extends Model
         return $this->nama;
     }
 
+    // Get Gelaran Prefix
     public function getGelaranPrefixAttribute()
     {
         return $this->gelaran?->gelaran ?? '';
     }
 
-    /**
-     * Get performance evaluations for staff
-     */
+    // Get Gelaran Suffix
+    public function getGelaranSuffixAttribute()
+    {
+        return $this->gelaran?->gelaran_terakhir ?? '';
+    }
+
+    // Get Performance Evaluations
     public function performanceEvaluations()
     {
         return $this->hasMany(StafPerformance::class, 'no_staf', 'staff_id')
             ->orderBy('year', 'desc');
     }
 
+    // Get Rekod Jawatan
     public function jawatanStaf()
     {
         return $this->hasMany(\App\Models\JawatanStaf::class, 'no_staf', 'staff_id');
     }
 
+    // Get Jawatan Terkini
     public function jawatanStafTerkini()
     {
         return $this->hasOne(\App\Models\JawatanStaf::class, 'no_staf', 'staff_id')
@@ -73,23 +78,27 @@ class Pemohon extends Model
             ->orderByDesc('aktif'); // optional
     }
 
+    // Get Jabatan Staf
     public function jabatanStaf()
     {
         return $this->hasOne(\App\Models\JabatanStaf::class, 'no_staf', 'staff_id');
     }
 
+    // Get Rekod Tatatertib
     public function tatatertib()
     {
         return $this->hasMany(StafTatatertib::class, 'no_staf', 'staff_id')
             ->orderBy('tarikh_conduct', 'desc');
     }
 
+    // Get Rekod Akademik
     public function akademikStaf()
     {
         return $this->hasMany(\App\Models\AkademikStaf::class, 'no_staf', 'staff_id')
         ->orderBy('tahun_tamat', 'desc');
     }
 
+    // Get Rekod Penyeliaan
     public function getPenyeliaanListAttribute()
     {
         return PenyeliaanStaf::where(function($q) {
@@ -100,6 +109,7 @@ class Pemohon extends Model
             ->get();
     }
 
+    // Get Count Penyeliaan
     public function getPenyeliaanCountAttribute()
     {
         return PenyeliaanStaf::where(function($q) {
@@ -109,9 +119,7 @@ class Pemohon extends Model
             ->count();
     }
 
-    /**
-     * Get publications list as attribute
-     */
+    // Get Rekod Penerbitan
     public function getPenerbitanListAttribute()
     {
         $pubIds = PubAuthor::where('nostaf', $this->staff_id)
@@ -124,9 +132,7 @@ class Pemohon extends Model
             ->get();
     }
 
-    /**
-     * Get publications count as attribute
-     */
+    // Get Count Penerbitan
     public function getPenerbitanCountAttribute()
     {
         $pubIds = PubAuthor::where('nostaf', $this->staff_id)
@@ -136,6 +142,7 @@ class Pemohon extends Model
         return PenerbitanStaf::whereIn('id', $pubIds)->count();
     }
 
+    // Penerbitan Relationship
     public function penerbitan()
     {
         return $this->hasManyThrough(
@@ -147,33 +154,30 @@ class Pemohon extends Model
             'pub_item_id'
         )
             ->orderBy('publish_date', 'desc');
-
     }
 
-    /**
-     * Relationship untuk Filament Relation Manager (penyeliaan)
-     */
+    // Penyeliaan Relationship
     public function penyeliaan()
     {
         $staffId = $this->staff_id;
 
-        // Return a Relation instance (HasMany)
         return $this->hasMany(PenyeliaanStaf::class, 'penyelia_utama', 'staff_id')
             ->orWhere('penyelia_bersama', 'LIKE', "%{$staffId}%");
     }
 
+    // Get Rekod Penyeliaan Utama Staf
     public function penyeliaanUtama()
     {
         return $this->hasMany(PenyeliaanStaf::class, 'penyelia_utama', 'staff_id');
     }
 
+    // Get Rekod Penyeliaan Bersama Staf
     public function penyeliaanBersama()
     {
         return $this->hasMany(PenyeliaanStaf::class, 'penyelia_bersama', 'staff_id');
     }
 
-// Dalam relation manager, kita combine manually nanti
-
+    // Get Markah Terkini Staf (Untuk check kelayakan)
     public function markahTerkini()
     {
         return $this->hasOne(StafMarkah::class, 'no_staf', 'staff_id')
@@ -181,24 +185,21 @@ class Pemohon extends Model
             ->latest('tahun_markah');
     }
 
+    // Get Akademik Tertinggi Staf
     public function akademikTertinggi()
     {
         return $this->hasOne(AkademikStaf::class, 'no_staf', 'staff_id')
             ->orderBy('kod_tahap', 'desc');
     }
 
-    /**
-     * Get all performance marks for staff
-     */
+    // Get Semua Markah Staf (Untuk Show Profile)
     public function semuaMarkah()
     {
         return $this->hasMany(StafMarkah::class, 'no_staf', 'staff_id')
             ->orderBy('tahun_markah', 'desc');
     }
 
-    /**
-     * Permohonan kenaikan pangkat
-     */
+
     public function promotionApplications()
     {
         return $this->hasMany(PromotionApplication::class, 'staff_id', 'staff_id')
@@ -216,7 +217,7 @@ class Pemohon extends Model
     }
 
     protected $fillable = [
-        'staff_id','kod_gelaran','gambar_profil','nama','gred_semasa','jawatan_semasa',
-        'ptj_fakulti','jabatan','emel_rasmi','no_telefon', 'status', 'is_active',
+        'staff_id','kod_gelaran','gambar_profil','nama',
+        'emel_rasmi','no_telefon', 'status', 'is_active',
     ];
 }

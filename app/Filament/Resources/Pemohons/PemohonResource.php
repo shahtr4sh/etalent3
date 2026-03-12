@@ -17,6 +17,8 @@ class PemohonResource extends Resource
 {
     protected static ?string $model = Pemohon::class;
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationLabel = 'Staff';
+    protected static ?string $label = 'Staff';
 
     public static function form(Schema $schema): Schema
     {

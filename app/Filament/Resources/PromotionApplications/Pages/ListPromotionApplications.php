@@ -10,10 +10,10 @@ class ListPromotionApplications extends ListRecords
 {
     protected static string $resource = PromotionApplicationResource::class;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            CreateAction::make(),
-        ];
-    }
+//    protected function getHeaderActions(): array
+//    {
+//        return [
+//            CreateAction::make(),
+//        ];
+//    }
 }

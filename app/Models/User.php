@@ -17,15 +17,18 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        if ($panel->getId() !== 'admin') {
+        // Untuk panel 'staff', hanya user biasa boleh access
+        if ($panel->getId() === 'staff') {
             return true;
         }
 
-        // Restrict admin panel kepada role tertentu sahaja
-        return $this->hasAnyRole([
-            'super_admin',
-            'penyemak',
-        ]);
+        // Untuk panel 'admin', hanya super admin dan pelulus boleh access
+        if ($panel->getId() !== 'admin') {
+            return true;
+        }
+        return $this->hasRole('super_admin')
+               ||
+               $this->hasRole('pelulus');
     }
 
     public function pemohon()

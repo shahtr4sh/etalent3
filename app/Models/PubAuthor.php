@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class PubAuthor extends Model
 {
     protected $table = 'pub_authors';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
-        'id',
         'pub_item_id',
         'name',
         'is_staff',

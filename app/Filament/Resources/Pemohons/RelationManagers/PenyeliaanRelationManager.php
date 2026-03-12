@@ -88,16 +88,6 @@ class PenyeliaanRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make(),                    // <-- OK
             ])
-//            ->actions([
-//                ViewAction::make(),                       // <-- OK
-//                EditAction::make(),                       // <-- OK
-//                DeleteAction::make(),                     // <-- OK
-//            ])
-//            ->bulkActions([
-//                BulkActionGroup::make([
-//                    DeleteAction::make(),                 // <-- OK (DeleteAction untuk bulk)
-//                ]),
-//            ])
             ->defaultSort('idtesis', 'desc');
     }
 

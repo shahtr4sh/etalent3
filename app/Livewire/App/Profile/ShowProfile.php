@@ -58,7 +58,7 @@ class ShowProfile extends Component
             ->get();
 
         $this->loadPenyeliaan();
-        $this->loadPenerbitan(); // ✅ PANGGIL METHOD BARU
+        $this->loadPenerbitan();
 
         $this->performanceEvaluations = StafPerformance::where('no_staf', $this->staff_id)
             ->orderBy('year', 'desc')

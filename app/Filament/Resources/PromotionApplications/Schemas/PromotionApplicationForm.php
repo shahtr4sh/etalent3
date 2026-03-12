@@ -19,17 +19,17 @@ class PromotionApplicationForm
                 TextInput::make('reference_no'),
                 Select::make('status')
                     ->options([
-            'DRAF' => 'D r a f',
-            'DIHANTAR' => 'D i h a n t a r',
-            'MENUNGGU_SEMAKAN' => 'M e n u n g g u  s e m a k a n',
-            'DIPULANGKAN' => 'D i p u l a n g k a n',
-            'DALAM_SEMAKAN' => 'D a l a m  s e m a k a n',
-            'UNTUK_KELULUSAN' => 'U n t u k  k e l u l u s a n',
-            'PERLU_MAKLUMAT' => 'P e r l u  m a k l u m a t',
-            'TANGGUH' => 'T a n g g u h',
-            'LULUS' => 'L u l u s',
-            'TIDAK_LULUS' => 'T i d a k  l u l u s',
-            'DITUTUP' => 'D i t u t u p',
+            'DRAF' => 'Draf',
+            'DIHANTAR' => 'Dihantar',
+            'MENUNGGU_SEMAKAN' => 'Menunggu semakan',
+            'DIPULANGKAN' => 'Dipulangkan',
+            'DALAM_SEMAKAN' => 'Dalam semakan',
+            'UNTUK_KELULUSAN' => 'Untuk kelulusan',
+            'PERLU_MAKLUMAT' => 'Perlu maklumat',
+            'TANGGUH' => 'Tangguh',
+            'LULUS' => 'Lulus',
+            'TIDAK_LULUS' => 'Tidak lulus',
+            'DITUTUP' => 'Ditutup',
         ])
                     ->default('DRAF')
                     ->required(),

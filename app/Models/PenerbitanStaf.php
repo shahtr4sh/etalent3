@@ -7,14 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 class PenerbitanStaf extends Model
 {
     protected $table = 'pub_items';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
-        'id',
         'nostaf',
         'title',
         'type',
         'publish_date',
-        'evidence'
+        'evidence',
+        'journal',
+        'volume',
+        'issue',
+        'pages',
+        'publisher',
+        'conference',
+        'doi',
     ];
 
     public $timestamps = false;
@@ -25,6 +32,17 @@ class PenerbitanStaf extends Model
     public function authors()
     {
         return $this->hasMany(PubAuthor::class, 'pub_item_id', 'id');
+    }
+
+    public function getAllAuthorsAttribute(): string
+    {
+        $authors = $this->authors;
+
+        if (! $authors || $authors->isEmpty()) {
+            return '-';
+        }
+
+        return $authors->pluck('name')->filter()->implode(', ');
     }
 
     /**
