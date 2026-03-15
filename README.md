@@ -44,24 +44,6 @@ etalent3/
 
 ### **Core Models & Relationships**
 
-```mermaid
-erDiagram
-    Pemohon ||--o{ PromotionApplication : has
-    Pemohon ||--o{ AkademikStaf : has
-    Pemohon ||--o{ JawatanStaf : has
-    Pemohon ||--|| JabatanStaf : has
-    Pemohon ||--o{ StafMarkah : has
-    Pemohon ||--o{ StafPerformance : has
-    Pemohon ||--o{ StafTatatertib : has
-    
-    PromotionApplication ||--o{ ApplicationDocument : has
-    
-    PubItems ||--o{ PubAuthors : has
-    PubItems ||--o{ PubItemIndexes : has
-    
-    StafPenyeliaan ||--|| TesisProgram : belongsTo
-```
-
 ### **1. `Pemohon.php` - Staff Profile (Core Model)**
 
 ```php
