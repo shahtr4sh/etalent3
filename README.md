@@ -1,5 +1,7 @@
 # 📚 **eTalent System - Developer Maintenance Guide**
 
+**This guide is for developers only.**
+
 ## **System Overview**
 
 eTalent is a staff profile CRUD and promotion application management system built with:
