@@ -50,7 +50,7 @@ class EditPemohon extends EditRecord
         if (! $user) {
             Notification::make()
                 ->title('Data pemohon berjaya dikemaskini')
-                ->warning()
+                ->success()
                 ->send();
 
 

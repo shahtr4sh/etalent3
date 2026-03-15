@@ -7,6 +7,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Actions\ActionGroup;
+use Illuminate\Support\Facades\Auth;
 
 class PemohonsTable
 {
@@ -49,8 +50,10 @@ class PemohonsTable
                     ->icon('heroicon-m-pencil-square')
                     ->color('warning')
                     ->modalHeading('Edit Data Staf')
-                    ->modalWidth('lg'),
+                    ->modalWidth('lg')
+                    ->visible(fn()=> Auth::user()?->hasRole('super_admin')),
             ])
+            ->modifyQueryUsing(fn ($query) => $query->where('status', '!=', 'T'))
             ->defaultSort('created_at', 'desc');
     }
 }

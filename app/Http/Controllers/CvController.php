@@ -40,19 +40,19 @@ class CvController extends Controller
 
         // Group supervisions
         $phdSupervisions = $supervisions->filter(function($s) {
-            return str_contains($s->program?->namaprog_bm ?? '', 'DOKTOR FALSAFAH');
+            return str_contains($s->program?->namaprog_bm ?? '', 'PhD');
         });
 
         $masterSupervisions = $supervisions->filter(function($s) {
-            return str_contains($s->program?->namaprog_bm ?? '', 'SARJANA');
+            return str_contains($s->program?->namaprog_bm ?? '', 'Bachelor');
         });
 
         $degreeSupervisions = $supervisions->filter(function($s) {
-            return !str_contains($s->program?->namaprog_bm ?? '', 'DOKTOR') &&
-                !str_contains($s->program?->namaprog_bm ?? '', 'SARJANA');
+            return !str_contains($s->program?->namaprog_bm ?? '', 'PhD') &&
+                !str_contains($s->program?->namaprog_bm ?? '', 'Bachelor');
         });
 
-        // Process profile image
+        // Process profile picture
         $profileImage = null;
         if ($staff->gambar_profil) {
             $imagePath = storage_path('app/public/' . $staff->gambar_profil);

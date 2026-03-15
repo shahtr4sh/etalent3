@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Schema\Blueprint;
 
 class ApplicationDocument extends Model
 {

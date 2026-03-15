@@ -46,9 +46,9 @@ class StafPerformance extends Model
      */
     public function getStatusTextAttribute()
     {
-        if ($this->performance_mark >= 90) return 'Cemerlang';
-        if ($this->performance_mark >= 80) return 'Baik';
-        if ($this->performance_mark >= 70) return 'Memuaskan';
-        return 'Perlu Penambahbaikan';
+        if ($this->performance_mark >= 90) return 'Excellent';
+        if ($this->performance_mark >= 80) return 'Good';
+        if ($this->performance_mark >= 70) return 'Satisfactory';
+        return 'Needs Improvement';
     }
 }

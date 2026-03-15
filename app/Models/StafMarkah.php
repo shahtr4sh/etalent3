@@ -38,7 +38,7 @@ class StafMarkah extends Model
      */
     public function getStatusTextAttribute()
     {
-        return $this->jum_mark >= 80 ? 'Cemerlang' : 'Perlu Penambahbaikan';
+        return $this->jum_mark >= 80 ? 'Excellent' : 'Need Improvement';
     }
 
     /**

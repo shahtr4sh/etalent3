@@ -16,9 +16,6 @@ class GelaranV extends Model
 
     public $timestamps = false;
 
-    /**
-     * Get pemohon with this gelaran
-     */
     public function pemohon()
     {
         return $this->hasMany(Pemohon::class, 'kod_gelaran', 'kodgelaran');

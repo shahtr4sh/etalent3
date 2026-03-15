@@ -8,13 +8,10 @@ class PenyeliaanStaf extends Model
 {
     protected $table = 'staf_penyeliaan';
 
-    // TOLD ELoquent primary key is 'idtesis', not 'id'
     protected $primaryKey = 'idtesis';
 
-    // If primary key is not incrementing (set false if not auto-increment)
     public $incrementing = false;
 
-    // If primary key is not integer (set string if needed)
     protected $keyType = 'int';
 
     protected $fillable = [

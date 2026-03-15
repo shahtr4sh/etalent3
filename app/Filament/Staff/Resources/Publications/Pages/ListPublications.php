@@ -14,13 +14,13 @@ class ListPublications extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-                ->label('Tambah Penerbitan Baru')
+                ->label('Add New Publication')
                 ->icon('heroicon-o-plus'),
         ];
     }
 
     public function getTitle(): string
     {
-        return 'Senarai Penerbitan Saya';
+        return 'My Publications';
     }
 }

@@ -21,7 +21,7 @@ class CreatePemohon extends CreateRecord
         if (! $user) {
             Notification::make()
                 ->title('Pemohon berjaya dicipta')
-                ->warning()
+                ->success()
                 ->send();
             return;
         }

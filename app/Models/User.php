@@ -22,13 +22,11 @@ class User extends Authenticatable implements FilamentUser
             return true;
         }
 
-        // Untuk panel 'admin', hanya super admin dan pelulus boleh access
-        if ($panel->getId() !== 'admin') {
-            return true;
+        // Untuk panel 'admin', super admin dan pelulus boleh access
+        if ($panel->getId() === 'admin') {
+            return $this->hasRole(['super_admin', 'penyemak']);
         }
-        return $this->hasRole('super_admin')
-               ||
-               $this->hasRole('pelulus');
+    return false;
     }
 
     public function pemohon()

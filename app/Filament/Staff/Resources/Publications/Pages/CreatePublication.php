@@ -40,7 +40,7 @@ class CreatePublication extends CreateRecord
                 'is_staff' => 1,
             ]);
 
-            // 3. simpan author tambahan dari repeater
+            // Simpan author tambahan dari repeater
             foreach ($authors as $author) {
                 $name = trim($author['name'] ?? '');
                 $isStaff = (int) ($author['is_staff'] ?? 0);
@@ -69,7 +69,7 @@ class CreatePublication extends CreateRecord
     protected function afterCreate(): void
     {
         Notification::make()
-            ->title('Publication berjaya disimpan')
+            ->title('Publication successfully created.')
             ->success()
             ->send();
     }

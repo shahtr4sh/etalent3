@@ -110,7 +110,7 @@
 
     <div style="background-color: #8B5CF6; color: white; padding: 2px; margin: -5px -55px; width: calc(100% + 120px);">
         <div style="padding-left: 25px; padding-right: 25px;">
-            <span style="font-weight: bold; text-transform: uppercase; font-size: 12pt;">Information</span>
+            <span style="padding: 22px; font-weight: bold; font-size: 10pt;">Information</span>
         </div>
     </div>
     {{-- Profile Image --}}
@@ -143,7 +143,7 @@
 <div style="margin-bottom: 25px;">
     <div style="background-color: #8B5CF6; color: white; padding: 2px; margin: -5px -55px; width: calc(100% + 120px);">
         <div style="padding-left: 25px; padding-right: 25px;">
-            <span style="font-weight: bold; text-transform: uppercase; font-size: 12pt;">Academic Qualification</span>
+            <span style="padding: 22px; font-weight: bold; font-size: 10pt;">Academic Qualification</span>
         </div>
     </div>
 
@@ -165,7 +165,7 @@
 <div style="margin-bottom: 25px;">
     <div style="background-color: #8B5CF6; color: white; padding: 2px; margin: -5px -55px; width: calc(100% + 120px);">
         <div style="padding-left: 25px; padding-right: 25px;">
-            <span style="font-weight: bold; text-transform: uppercase; font-size: 12pt;">Publications</span>
+            <span style="padding: 22px; font-weight: bold; font-size: 10pt;">Publications</span>
         </div>
     </div>
     {{-- CONTENT --}}
@@ -186,7 +186,7 @@
 <div class="section">
     <div style="background-color: #8B5CF6; color: white; padding: 2px; margin: -5px -55px; width: calc(100% + 120px);">
         <div style="padding-left: 25px; padding-right: 25px;">
-            <span style="font-weight: bold; text-transform: uppercase; font-size: 12pt;">Supervision</span>
+            <span style="padding: 22px; font-weight: bold; font-size: 10pt;">Supervision</span>
         </div>
     </div>
 

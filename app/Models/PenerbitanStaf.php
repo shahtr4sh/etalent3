@@ -83,9 +83,6 @@ class PenerbitanStaf extends Model
         return $this->indexes->contains('name', $indexName);
     }
 
-    /**
-     * Capitalize first letter of a sentence
-     */
     private function capitalizeFirstSentence($text)
     {
         if (empty($text)) {
@@ -104,9 +101,7 @@ class PenerbitanStaf extends Model
         return mb_strtoupper(mb_substr($text, 0, 1)) . mb_substr($text, 1);
     }
 
-    /**
-     * Get formatted title with proper capitalization
-     */
+
     public function getFormattedTitleAttribute()
     {
         return $this->capitalizeFirstSentence($this->title);

@@ -16,10 +16,10 @@ class ViewPublication extends ViewRecord
         return $schema
             ->components([
                 TextEntry::make('title')
-                    ->label('Tajuk'),
+                    ->label('Title'),
 
                 TextEntry::make('type')
-                    ->label('Jenis')
+                    ->label('Type')
                     ->formatStateUsing(fn ($state) => ucwords(str_replace('_', ' ', $state))),
 
                 TextEntry::make('all_authors')
@@ -27,23 +27,23 @@ class ViewPublication extends ViewRecord
                     ->wrap(),
 
                 TextEntry::make('publish_date')
-                    ->label('Tarikh Penerbitan')
+                    ->label('Publish Date')
                     ->date('d/m/Y'),
 
                 TextEntry::make('publisher')
-                    ->label('Penerbit')
+                    ->label('Publisher')
                     ->placeholder('-'),
 
                 TextEntry::make('journal')
-                    ->label('Jurnal')
+                    ->label('Journal')
                     ->placeholder('-'),
 
                 TextEntry::make('conference')
-                    ->label('Persidangan')
+                    ->label('Conference')
                     ->placeholder('-'),
 
                 TextEntry::make('pages')
-                    ->label('Halaman')
+                    ->label('Pages')
                     ->placeholder('-'),
 
                 TextEntry::make('doi')

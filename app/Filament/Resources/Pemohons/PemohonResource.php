@@ -12,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class PemohonResource extends Resource
 {
@@ -117,6 +118,12 @@ class PemohonResource extends Resource
     public static function table(Table $table): Table
     {
         return PemohonsTable::configure($table);
+    }
+
+    public static function canCreate(): bool
+    {
+        // Only super_admin can create new staff
+        return Auth::user()?->hasRole('super_admin') ?? false;
     }
 
     public static function getPages(): array

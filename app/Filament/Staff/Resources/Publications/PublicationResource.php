@@ -39,8 +39,8 @@ class PublicationResource extends Resource
     }
 
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $navigationLabel = 'Penerbitan Saya';
-    protected static ?string $pluralLabel = 'Penerbitan';
+    protected static ?string $navigationLabel = 'My Publications';
+    protected static ?string $pluralLabel = 'Publications';
     protected static ?string $slug = 'penerbitan';
 
     public static function getEloquentQuery(): Builder
@@ -62,17 +62,17 @@ class PublicationResource extends Resource
     {
         return $schema
             ->components([
-                Section::make('Maklumat Penerbitan')
+                Section::make('Publication Details')
                     ->schema([
 
                         TextInput::make('title')
-                            ->label('Tajuk')
+                            ->label('Title')
                             ->required()
                             ->maxLength(500)
                             ->columnSpanFull(),
 
                         Select::make('type')
-                            ->label('Jenis Penerbitan')
+                            ->label('Type of Publication')
                             ->options([
                                 'journal' => 'Journal',
                                 'book' => 'Book',
@@ -86,7 +86,7 @@ class PublicationResource extends Resource
                         Grid::make(2)
                             ->schema([
                                 DatePicker::make('publish_date')
-                                    ->label('Tarikh Penerbitan')
+                                    ->label('Publish Date')
                                     ->required()
                                     ->maxDate(now()),
 
@@ -97,12 +97,12 @@ class PublicationResource extends Resource
                             ]),
                     ]),
 
-                Section::make('Maklumat Tambahan')
+                Section::make('Additional Information')
                     ->schema([
                         Grid::make(2)
                             ->schema([
                                 TextInput::make('journal')
-                                    ->label('Nama Jurnal')
+                                    ->label('Journal Name')
                                     ->visible(fn (Get $get) => $get('type') === 'journal'),
 
                                 TextInput::make('volume')
@@ -114,15 +114,15 @@ class PublicationResource extends Resource
                                     ->visible(fn (Get $get) => $get('type') === 'journal'),
 
                                 TextInput::make('pages')
-                                    ->label('Halaman')
+                                    ->label('Pages')
                                     ->visible(fn (Get $get) => in_array($get('type'), ['journal', 'chapter-in-book', 'conference'])),
 
                                 TextInput::make('publisher')
-                                    ->label('Penerbit')
+                                    ->label('Publisher')
                                     ->visible(fn (Get $get) => in_array($get('type'), ['book', 'chapter-in-book'])),
 
                                 TextInput::make('conference')
-                                    ->label('Nama Persidangan')
+                                    ->label('Conference Name')
                                     ->visible(fn (Get $get) => $get('type') === 'conference'),
 
                                 TextInput::make('doi')
@@ -152,15 +152,15 @@ class PublicationResource extends Resource
                                 Grid::make(3)
                                     ->schema([
                                         TextInput::make('name')
-                                            ->label('Nama Author')
+                                            ->label('Author Name')
                                             ->required()
                                             ->maxLength(255),
 
                                         Select::make('is_staff')
                                             ->label('Status')
                                             ->options([
-                                                1 => 'Staf UniSHAMS',
-                                                0 => 'Pengarang Luar',
+                                                1 => 'UniSHAMS Staff',
+                                                0 => 'External Author',
                                             ])
                                             ->default(0)
                                             ->native(false)
@@ -185,13 +185,13 @@ class PublicationResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('title')
-                    ->label('Tajuk')
+                    ->label('Title')
                     ->searchable()
                     ->limit(50)
                     ->wrap(),
 
                 TextColumn::make('type')
-                    ->label('Jenis')
+                    ->label('Type')
                     ->badge()
                     ->formatStateUsing(fn ($state) => ucwords(str_replace('_', ' ', $state)))
                     ->color(fn ($state) => match ($state) {
@@ -206,24 +206,24 @@ class PublicationResource extends Resource
                     ->getStateUsing(fn ($record) => $record->authors->count() . ' orang'),
 
                 TextColumn::make('publish_date')
-                    ->label('Tahun')
+                    ->label('Year')
                     ->date('Y')
                     ->sortable(),
 
                 TextColumn::make('indexes_list')
-                    ->label('Indeks')
+                    ->label('Index')
                     ->badge()
                     ->getStateUsing(fn ($record) => $record->indexes?->pluck('name')->join(', ')),
 
                 TextColumn::make('created_at')
-                    ->label('Dicipta')
+                    ->label('Created')
                     ->dateTime('d/m/Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
-                    ->label('Jenis')
+                    ->label('Type')
                     ->options([
                         'journal' => 'Journal',
                         'book' => 'Book',
@@ -234,9 +234,9 @@ class PublicationResource extends Resource
                 Tables\Filters\Filter::make('publish_date')
                     ->form([
                         DatePicker::make('published_from')
-                            ->label('Dari Tahun'),
+                            ->label('From'),
                         DatePicker::make('published_until')
-                            ->label('Hingga Tahun'),
+                            ->label('Until'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
@@ -246,14 +246,14 @@ class PublicationResource extends Resource
             ])
             ->recordActions([
                 ViewAction::make()
-                    ->label('Lihat'),
+                    ->label('View'),
 
                 EditAction::make()
                     ->label('Edit')
                     ->visible(fn ($record) => $record->authors->contains('nostaf', Auth::user()?->staff_id)),
 
                 DeleteAction::make()
-                    ->label('Padam')
+                    ->label('Delete')
                     ->requiresConfirmation()
                     ->visible(fn ($record) => $record->authors->contains('nostaf', Auth::user()?->staff_id)),
             ])

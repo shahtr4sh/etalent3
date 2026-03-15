@@ -1,5 +1,5 @@
 <?php
-
+/*
 declare(strict_types=1);
 
 namespace App\Policies;
@@ -11,7 +11,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class PromotionApplicationPolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:PromotionApplication');
@@ -67,4 +67,4 @@ class PromotionApplicationPolicy
         return $authUser->can('Reorder:PromotionApplication');
     }
 
-}
+}*/

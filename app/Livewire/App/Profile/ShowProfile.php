@@ -19,15 +19,12 @@ class ShowProfile extends Component
     public $penyeliaan = [];
     public $penyeliaanUtama = [];
     public $penyeliaanBersama = [];
-
-    // Properties untuk penerbitan ikut jenis
     public $penerbitanJournal = [];
     public $penerbitanBook = [];
     public $penerbitanChapter = [];
     public $penerbitanProceeding = [];
     public $penerbitanOther = [];
     public $totalPenerbitan = 0;
-
     public $staff_id;
     public $performanceEvaluations = [];
     public $searchPenerbitan = '';
@@ -50,7 +47,7 @@ class ShowProfile extends Component
         ])->where('staff_id', $this->staff_id)->first();
 
         if (!$this->pemohon) {
-            abort(404, 'Staff tidak dijumpai');
+            abort(404, 'Staff not found.');
         }
 
         $this->semuaMarkah = StafMarkah::where('no_staf', $this->staff_id)
@@ -89,9 +86,6 @@ class ShowProfile extends Component
         $this->penyeliaanBersama = $list->filter(fn ($tesis) => $tesis->isPenyeliaBersama($staffId))->values();
     }
 
-    /**
-     * Load and group publications by type
-     */
     private function loadPenerbitan(): void
     {
         if (!$this->pemohon) {
@@ -140,9 +134,7 @@ class ShowProfile extends Component
         )->values();
     }
 
-    /**
-     * Get publication by type
-     */
+
     public function getPenerbitanByType($type)
     {
         return match($type) {

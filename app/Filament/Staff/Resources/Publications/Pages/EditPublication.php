@@ -33,12 +33,12 @@ class EditPublication extends EditRecord
     {
         return $schema
             ->schema([
-                Section::make('Maklumat Penerbitan')
+                Section::make('Publication Details')
                     ->schema([
                         TextEntry::make('title')
-                            ->label('Tajuk'),
+                            ->label('Title'),
                         TextEntry::make('type')
-                            ->label('Jenis')
+                            ->label('Type')
                             ->badge()
                             ->color(fn ($state) => match($state) {
                                 'journal' => 'success',
@@ -47,7 +47,7 @@ class EditPublication extends EditRecord
                                 default => 'secondary',
                             }),
                         TextEntry::make('publish_date')
-                            ->label('Tarikh Penerbitan')
+                            ->label('Publish Date')
                             ->date(),
                         TextEntry::make('doi')
                             ->label('DOI')
@@ -66,7 +66,7 @@ class EditPublication extends EditRecord
                             ->state(fn ($record) => $record->authors?->values()->toArray() ?? [])
                             ->schema([
                                 TextEntry::make('name')
-                                    ->label('Nama'),
+                                    ->label('Name'),
 
                                 TextEntry::make('is_staff')
                                     ->label('Status')
