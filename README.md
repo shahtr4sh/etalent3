@@ -1,81 +1,361 @@
-# eTalent - Sistem Pengurusan Permohonan Kenaikan Pangkat
+# 📚 **eTalent System - Developer Maintenance Guide**
 
-## 📋 Overview
-eTalent is a comprehensive application management system for handling promotion applications. It features both an applicant-facing interface built with Livewire and an administrative panel powered by Filament PHP.
+## **System Overview**
 
-## 🏗️ Tech Stack
-- **Framework**: Laravel 12.53.0
-- **PHP Version**: 8.2.12
-- **Database**: MySQL/MariaDB 10.4.32
-- **Frontend**: Livewire v4, TailwindCSS
-- **Admin Panel**: Filament v5.2.2
-- **Authentication**: Laravel Breeze / Filament Authentication
-- **Authorization**: Spatie Permission + Filament Shield
-
-## ✨ Key Features
-
-### Applicant Module (Livewire)
-- ✅ Create new promotion applications
-- ✅ Save applications as draft
-- ✅ Submit applications for processing
-- ✅ View application status and history
-- ✅ Edit returned applications for corrections
-- ✅ Automatic reference number generation
-- ✅ Color-coded status badges with descriptions
-
-### Admin Module (Filament)
-- ✅ Full CRUD operations for applications
-- ✅ Status management with history tracking
-- ✅ Document upload and management
-- ✅ Role-based permissions (Filament Shield)
-- ✅ Advanced filtering and search
-- ✅ Status history timeline
-- ✅ Dashboard with statistics
-
-## 🎨 Application Status Flow
-
-| Status | Description | Color |
-|--------|-------------|-------|
-| Draf | Permohonan belum dihantar | Gray |
-| Dihantar | Permohonan dihantar untuk diproses | Blue |
-| Menunggu Semakan | Dalam peti masuk urusetia/penyemak | Yellow |
-| Dipulangkan | Tidak lengkap; perlu pembetulan | Orange |
-| Dalam Semakan | Semakan merit/kandungan | Indigo |
-| Untuk Kelulusan | Lengkap dan sedia untuk keputusan Pelulus | Purple |
-| Perlu Maklumat | Pelulus minta tambahan data/dokumen | Pink |
-| Tangguh | Keputusan ditangguh | Amber |
-| Lulus | Keputusan muktamad lulus | Green |
-| Tidak Lulus | Keputusan muktamad tidak lulus | Red |
-| Ditutup | Rekod ditutup untuk simpanan/audit | Slate |
-
-## 🚀 Installation
-
-### Prerequisites
-- PHP 8.2+
-- Composer
-- MySQL/MariaDB
-- Node.js & NPM
-
-## 🔧 Configuration
-
-### Filament Panel
-The admin panel is configured in `app/Providers/Filament/AdminPanelProvider.php` with:
-- Custom navigation groups
-- Filament Shield integration
-- User menu items
-
-## 📝 License
-This project is proprietary and confidential.
-
-## 👥 Authors
-- Faris - Initial development
-
-## 🙏 Acknowledgments
-- Laravel Framework
-- Filament PHP
-- Livewire
-- Spatie Permission
+eTalent is a staff profile CRUD and promotion application management system built with:
+- **Laravel 12** - PHP Framework
+- **Filament v5** - Admin Panel & Form Builder
+- **Livewire v3** - Frontend Components
+- **MySQL** - Database
+- **Spatie Permission** - Role & Permission Management
 
 ---
 
-**Note**: This README reflects the current state of the project with all features implemented including the applicant module (Livewire), admin module (Filament), status tracking, document management, and history logging.
+## **Project Structure**
+
+### **Key Directories**
+
+```
+etalent3/
+├── app/
+│   ├── Filament/                 # ALL Filament-related code
+│   │   ├── Resources/             # Admin Panel Resources
+│   │   │   ├── Pemohons/          # Staff Management
+│   │   │   └── PromotionApplications/ # Promotion Applications
+│   │   └── Staff/                 # Staff Panel (for users)
+│   │       └── Resources/Publications/
+│   ├── Livewire/                  # Public-facing components
+│   │   └── App/Profile/           # Public profile pages
+        └── App/Permohonan/        # Promotion application forms (Commented for now)
+│   ├── Models/                     # ALL database models
+│   ├── Http/Controllers/           # API/Web controllers
+│   └── Policies/                    # Authorization policies
+├── resources/views/
+│   ├── filament/                    # Filament custom views (Indicators Modal)
+│   ├── livewire/                    # Livewire component views
+│   └── pdf/                         # CV PDF templates
+├── routes/
+│    └── web.php                      # Public & app routes
+```
+
+---
+
+## **Database Schema & Models**
+
+### **Core Models & Relationships**
+
+```mermaid
+erDiagram
+    Pemohon ||--o{ PromotionApplication : has
+    Pemohon ||--o{ AkademikStaf : has
+    Pemohon ||--o{ JawatanStaf : has
+    Pemohon ||--|| JabatanStaf : has
+    Pemohon ||--o{ StafMarkah : has
+    Pemohon ||--o{ StafPerformance : has
+    Pemohon ||--o{ StafTatatertib : has
+    
+    PromotionApplication ||--o{ ApplicationDocument : has
+    
+    PubItems ||--o{ PubAuthors : has
+    PubItems ||--o{ PubItemIndexes : has
+    
+    StafPenyeliaan ||--|| TesisProgram : belongsTo
+```
+
+### **1. `Pemohon.php` - Staff Profile (Core Model)**
+
+```php
+// Key Relationships
+public function gelaran()               // Gelaran akademik (Dr., Prof., etc)
+public function jawatanStaf()            // All position history
+public function jawatanStafTerkini()     // Current position
+public function jabatanStaf()            // Department/Unit
+public function akademikStaf()           // Academic qualifications records
+public function promotionApplications()  // Promotion applications
+public function markahTerkini()          // Latest performance score
+public function semuaMarkah()            // All LNPT performance scores
+public function performanceEvaluations() // Annual service evaluations
+public function tatatertib()             // Disciplinary records
+public function user()                   // Linked user account
+```
+
+**Critical Note:** `staff_id` is the **primary key** and is a **string**, not auto-incrementing integer.
+
+---
+
+### **2. `PromotionApplication.php` - Promotion Requests**
+
+```php
+// Key Fields
+- staff_id          // Applicant
+- gred_jawatan      // Grade applied for
+- reference_no      // Auto-generated (ETL-2024-000001)
+- status            // DRAF, DIHANTAR, MENUNGGU_SEMAKAN, etc
+- is_active         // Only one active application per staff
+- metadata          // JSON field for additional data
+```
+
+**Important:** Reference numbers are generated via `ReferenceService::nextPromotionRef()`
+
+---
+
+### **3. `User.php` - Authentication Model**
+
+```php
+// Implements FilamentUser
+public function canAccessPanel(Panel $panel): bool
+{
+    return match($panel->getId()) {
+        'staff' => !is_null($this->staff_id),  // Must have staff_id
+        'admin' => $this->hasRole(['super_admin', 'pelulus']),
+        default => false
+    };
+}
+
+// Relationships
+public function pemohon()  // Links to staff record via staff_id
+```
+
+**Note:** The `staff_id` field links `users` table to `pemohon` table.
+
+---
+
+## **Filament Panel Configuration**
+
+### **Two Separate Panels**
+
+#### **1. Admin Panel (`/admin`)**
+- **Purpose:** Back-office management
+- **Access:** Super Admin & Pelulus only
+- **Resources:** Staff management, promotion applications (future implementation)
+- **Provider:** `AdminPanelProvider.php`
+
+#### **2. Staff Panel (`/staff`)**
+- **Purpose:** Staff self-service to manage staff records
+    (publications, performance marks, supervisions, etc). Still in development.
+- **Access:** All users with `staff_id`
+- **Resources:** Publication management
+- **Provider:** `StaffPanelProvider.php`
+
+---
+
+## **Role & Permission System**
+
+### **Database Tables (Spatie Permission)**
+- `roles` - Available roles: `super_admin`, `penyemak`
+- `permissions` - Granular permissions (auto-generated by Shield)
+- `model_has_roles` - Links users to roles
+
+### **Key Permission Logic in Code**
+
+```php
+// In Resources (check if user can access)
+public static function canAccess(): bool
+{
+    return auth()->check() && !is_null(auth()->user()->staff_id);
+}
+
+// In Tables (hide buttons based on role)
+EditAction::make()
+    ->visible(fn () => auth()->user()?->hasRole('super_admin')),
+```
+
+---
+
+## **Critical Files & Their Purpose**
+
+### **Models (`app/Models/`)**
+
+| File | Purpose                                                               |
+|------|-----------------------------------------------------------------------|
+| `Pemohon.php` | Staff profiles - **MOST IMPORTANT**                                   |
+| `PromotionApplication.php` | Promotion requests -  **Not Implemented Fully, should be continued.** |
+| `PenerbitanStaf.php` | Staff publications                                                    |
+| `PenyeliaanStaf.php` | Thesis supervisions                                                   |
+| `StafMarkah.php` | Performance scores                                                    |
+| `StafTatatertib.php` | Disciplinary records                                                  |
+
+### **Filament Resources (`app/Filament/`)**
+
+| File | Purpose |
+|------|---------|
+| `Resources/Pemohons/PemohonResource.php` | Staff management UI |
+| `Resources/PromotionApplications/PromotionApplicationResource.php` | Promotion applications UI |
+| `Staff/Resources/Publications/PublicationResource.php` | Staff self-service publications |
+
+### **Livewire Components (`app/Livewire/`)**
+
+| File | Purpose |
+|------|---------|
+| `App/Profile/ShowProfile.php` | Public profile page (no login required) |
+
+### **Controllers (`app/Http/Controllers/`)**
+
+| File | Purpose |
+|------|---------|
+| `CvController.php` | Generates PDF CV with DomPDF |
+
+---
+
+## **Routes Overview**
+
+### **`routes/web.php`**
+
+```php
+// Public routes - NO LOGIN REQUIRED
+Route::get('/app/profil/{staff_id}', ShowProfile::class)  // Public profile
+Route::get('/app/profil/{staff_id}/cv', [CvController::class, 'generate']) // Public CV
+
+// Filament panels auto-register their own routes
+// Admin: /admin/*
+// Staff: /staff/*
+```
+
+---
+
+## **Key Workflows**
+
+### **1. Public Profile View**
+```
+URL: /app/profil/{staff_id}
+Controller: ShowProfile.php (Livewire)
+Data Loaded:
+- Staff info (Pemohon)
+- Academic history
+- Position history
+- Supervisions (filtered by staff_id)
+- Publications (filtered via PubAuthor)
+- Performance marks
+- Disciplinary records
+```
+
+### **2. Promotion Application** // **Not Implemented**
+```
+1. Staff selects position from SelectJawatan
+2. KelayakanJawatan checks eligibility
+3. Application saved to PromotionApplication
+4. Reference generated via ReferenceService
+```
+
+### **3. CV Generation**
+```
+Controller: CvController.php
+Template: resources/views/pdf/cv.blade.php
+Uses: DomPDF library
+Images: Base64 encoded for reliability
+```
+
+---
+
+## ⚠️ **Important Gotchas**
+
+### **1. Staff ID as String**
+```php
+// Pemohon model - primary key is string!
+protected $primaryKey = 'staff_id';
+public $incrementing = false;
+protected $keyType = 'string';
+```
+
+### **2. Publication Filtering**
+```php
+// Publications are linked via PubAuthor, not directly to Pemohon
+$pubIds = PubAuthor::where('nostaf', $staffId)->pluck('pub_item_id');
+```
+
+### **3. Supervision Filtering**
+```php
+// Staff can be either main supervisor OR co-supervisor
+$supervisions = PenyeliaanStaf::where('penyelia_utama', $staffId)
+    ->orWhere('penyelia_bersama', 'LIKE', "%{$staffId}%");
+```
+
+### **4. Image Handling**
+- Profile pictures stored in: `storage/app/public/gambar-profil/`
+- CV uses Base64 encoding for reliability
+
+---
+
+## 🛠**Common Maintenance Tasks**
+
+### **Adding a New Role**
+```sql
+INSERT INTO roles (name, guard_name) VALUES ('penyemak', 'web');
+```
+
+### **Clearing Cache**
+```bash
+php artisan optimize:clear
+php artisan filament:optimize
+composer dump-autoload
+```
+
+### **Checking Logs**
+```bash
+# Windows PowerShell
+Get-Content storage/logs/laravel.log -Wait
+
+# Linux/Mac
+tail -f storage/logs/laravel.log
+```
+
+### **Generating CV**
+```php
+// Manual test in tinker
+$cv = app(CvController::class)->generate('staff_id_here');
+```
+
+### **Debugging Permission Issues**
+```php
+// Check user roles
+$user = User::find(1);
+$user->getRoleNames(); // Collection of roles
+
+// Check if user can access panel
+$user->canAccessPanel(Panel::make()->id('admin'));
+```
+
+---
+
+## 📋 **Environment Variables**
+
+```env
+# Critical settings
+APP_NAME=eTalent
+APP_URL=http://localhost:8000
+
+# Session configuration
+SESSION_DRIVER=file  # or database
+SESSION_COOKIE=laravel_session
+
+# Database
+DB_CONNECTION=mysql
+DB_HOST= {insert_host_here}
+DB_PORT={insert_port_here}
+DB_DATABASE=etalent
+DB_USERNAME={username_here}
+DB_PASSWORD={password_here}}
+```
+
+---
+
+## **Deployment Checklist**
+
+1. ✅ Run `php artisan storage:link`
+2. ✅ Set proper file permissions on `storage/`
+3. ✅ Configure `SESSION_DRIVER=database` for production
+4. ✅ Run `php artisan migrate`
+5. ✅ Import initial data (status_jawatan, select_jawatan)
+6. ✅ Create super_admin user
+7. ✅ Test both panels (admin & staff)
+8. ✅ Test public profile access
+
+---
+
+## 📞 **Support**
+
+For development issues, check:
+- `storage/logs/laravel.log`
+- Filament documentation: https://filamentphp.com/docs/5.x/
+
+---
