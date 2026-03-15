@@ -229,7 +229,7 @@ Images: Base64 encoded for reliability
 
 ---
 
-## ⚠️ **Important Gotchas**
+## ⚠ **Important Notes**
 
 ### **1. Staff ID as String**
 ```php
@@ -258,7 +258,7 @@ $supervisions = PenyeliaanStaf::where('penyelia_utama', $staffId)
 
 ---
 
-## 🛠**Common Maintenance Tasks**
+## **Common Maintenance Tasks**
 
 ### **Adding a New Role**
 ```sql
@@ -299,7 +299,7 @@ $user->canAccessPanel(Panel::make()->id('admin'));
 
 ---
 
-## 📋 **Environment Variables**
+## **Environment Variables**
 
 ```env
 # Critical settings
