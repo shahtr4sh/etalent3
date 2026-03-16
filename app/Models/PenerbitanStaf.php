@@ -107,9 +107,9 @@ class PenerbitanStaf extends Model
         return $this->capitalizeFirstSentence($this->title);
     }
 
-    /**
-     * Format authors in simple format: "Lastname, Initials"
-     */
+
+    // Format authors in simple format: "Lastname, Initials"
+
     public function getFormattedAuthorsAttribute()
     {
         $authors = $this->authors->map(function($author) {
@@ -123,9 +123,9 @@ class PenerbitanStaf extends Model
         return implode(', ', $authors);
     }
 
-    /**
-     * Format for citation: "Authors (year). Title" with proper capitalization
-     */
+
+    // Format for citation: "Authors (year). Title" with proper capitalization
+
     public function getCitationAttribute()
     {
         $authors = $this->formatted_authors;

@@ -20,16 +20,3 @@ Route::prefix('app')->name('app.')->group(function () {
     Route::get('/profil/{staff_id}/cv', [CvController::class, 'generate'])
         ->name('profil.cv');
 });
-
-/*
-|--------------------------------------------------------------------------
-| ADMIN ROUTES (Filament)
-|--------------------------------------------------------------------------
-*/
-
-// Biarkan Filament urus sendiri /admin
-//Route::get('/admin', function () {
-//    return redirect('/admin/login');
-//});
-
-/*->name('login');*/

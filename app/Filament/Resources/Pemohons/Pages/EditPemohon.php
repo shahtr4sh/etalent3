@@ -49,7 +49,7 @@ class EditPemohon extends EditRecord
 
         if (! $user) {
             Notification::make()
-                ->title('Data pemohon berjaya dikemaskini')
+                ->title('Staff Data Updated Successfully')
                 ->success()
                 ->send();
 
@@ -76,7 +76,7 @@ class EditPemohon extends EditRecord
         }
 
         Notification::make()
-            ->title('Data pemohon dan role berjaya dikemaskini')
+            ->title('Staff Changes Updated Successfully')
             ->success()
             ->send();
 

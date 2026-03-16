@@ -44,15 +44,15 @@ class ViewPromotionApplication extends ViewRecord
         return $schema
             ->components([
                 // Maklumat Permohonan
-                Section::make('Maklumat Permohonan')
+                Section::make('Application Details')
                     ->compact()
                     ->components([
                         Grid::make(3)
                             ->schema([
                                 TextEntry::make('reference_no')
-                                    ->label('No. Rujukan'),
+                                    ->label('Reference Number'),
                                 TextEntry::make('gred_jawatan')
-                                    ->label('Gred Dipohon')
+                                    ->label('Applied Grade')
                                     ->formatStateUsing(function ($state) {
                                         $selectJawatan = \App\Models\SelectJawatan::where('gredJawatan', $state)->first();
                                         return $selectJawatan ? $selectJawatan->kod_kump . $state : $state;
@@ -74,7 +74,7 @@ class ViewPromotionApplication extends ViewRecord
                     ]),
 
                 // Profile Header dengan Gambar
-                Section::make('Maklumat Pemohon')
+                Section::make('Applicant Profile')
                     ->compact()
                     ->components([
                         Grid::make(1)
@@ -82,31 +82,31 @@ class ViewPromotionApplication extends ViewRecord
                             ->schema([
                                 // Row 1: Nama Penuh
                                 TextEntry::make('nama_dengan_gelaran')
-                                    ->label('Nama Penuh')
+                                    ->label('Full Name')
                                     ->weight('bold')
                                     ->size('lg')
                                     ->getStateUsing(fn () => $pemohon->nama_dengan_gelaran),
 
                                 // Row 2: ID Staf
                                 TextEntry::make('staff_id')
-                                    ->label('ID Staf')
+                                    ->label('Staff ID')
                                     ->weight('bold')
                                     ->size('md')
                                     ->getStateUsing(fn () => $pemohon->staff_id),
 
-                                // Row 3: Maklumat kontak (2 column grid)
+                                // Row 3: Maklumat kontak
                                 Grid::make(2)
                                     ->schema([
                                         TextEntry::make('emel_rasmi')
-                                            ->label('Email Rasmi')
+                                            ->label('Official Email')
                                             ->getStateUsing(fn () => $pemohon->emel_rasmi)
                                             ->copyable(),
                                         TextEntry::make('no_telefon')
-                                            ->label('No. Telefon')
+                                            ->label('Contact Number')
                                             ->getStateUsing(fn () => $pemohon->no_telefon ?? '-')
                                             ->copyable(),
                                         TextEntry::make('jabatan')
-                                            ->label('Jabatan')
+                                            ->label('Department')
                                             ->getStateUsing(fn () => $pemohon->jabatanStaf->nama_jabatan ?? '-'),
                                         TextEntry::make('unit')
                                             ->label('Unit')
@@ -117,16 +117,16 @@ class ViewPromotionApplication extends ViewRecord
                                 Grid::make(2)
                                     ->schema([
                                         TextEntry::make('jawatan_hakiki')
-                                            ->label('Jawatan Hakiki')
+                                            ->label('Current Position')
                                             ->getStateUsing(function () use ($pemohon) {
                                                 if (!$pemohon->jawatanStafTerkini) return '-';
                                                 return $pemohon->jawatanStafTerkini->nama_jawatan .
                                                     ' (' . $pemohon->jawatanStafTerkini->gred_jawatan . ')';
                                             }),
                                         TextEntry::make('markah_prestasi')
-                                            ->label('Markah Prestasi')
+                                            ->label('Performance Mark')
                                             ->getStateUsing(function () use ($pemohon) {
-                                                if (!$pemohon->markahTerkini) return 'Tiada rekod';
+                                                if (!$pemohon->markahTerkini) return 'No record';
                                                 return number_format($pemohon->markahTerkini->jum_mark, 2) . '%';
                                             })
                                             ->color(function () use ($pemohon) {
@@ -147,7 +147,7 @@ class ViewPromotionApplication extends ViewRecord
                 ->label('Indicator status')
                 ->icon('heroicon-m-sparkles')
                 ->color('info')
-                ->modalHeading('Indikator Kelayakan Permohonan')
+                ->modalHeading('Eligibility Status Indicators')
                 ->modalWidth('4xl')
                 ->modalSubmitAction(false) // info sahaja, tiada submit
                 ->modalContent(function () {
@@ -167,11 +167,7 @@ class ViewPromotionApplication extends ViewRecord
                     // Tapis ikut role/policy/status semasa
                     $user = auth()->user();
 
-                    // ✅ Guna Policy jika ada (disarankan)
-                    // return $user->can('approve', $this->record)
-                    //     && $this->record->status !== 'UNTUK_KELULUSAN';
-
-                    // ❗️Fallback simple: hadkan kepada user yang ada role 'Admin'
+                    // Fallback: hadkan kepada user yang ada role 'Admin'
                     return $user && method_exists($user, 'hasRole')
                         ? $user->hasRole('Admin') && $this->record->status !== 'UNTUK_KELULUSAN'
                         : $this->record->status !== 'UNTUK_KELULUSAN';
@@ -182,7 +178,7 @@ class ViewPromotionApplication extends ViewRecord
                     ]);
 
                     Notification::make()
-                        ->title('Permohonan dihantar untuk kelulusan')
+                        ->title('Application Sent for Approval')
                         ->success()
                         ->send();
 

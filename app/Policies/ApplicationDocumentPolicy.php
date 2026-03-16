@@ -16,6 +16,6 @@ class ApplicationDocumentPolicy
         }
 
         // role backoffice boleh view
-        return $user->hasAnyRole(['urusetia','penyemak','pelulus','admin','pengurusan-atasan']);
+        return $user->hasAnyRole(['penyemak','super_admin']);
     }
 }

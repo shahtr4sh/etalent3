@@ -22,14 +22,14 @@ class PemohonsTable
                     ->openUrlInNewTab(),
 
                 TextColumn::make('nama')
-                    ->label('Nama')
+                    ->label('Name')
                     ->searchable()
                     ->url(fn ($record) => route('app.profil.show', ['staff_id' => $record->staff_id]))
                     ->openUrlInNewTab()
                     ->color('primary'),
 
                 TextColumn::make('emel_rasmi')
-                    ->label('Emel Rasmi')
+                    ->label('Official Email')
                     ->searchable(),
 
                 TextColumn::make('created_at')
@@ -49,7 +49,7 @@ class PemohonsTable
                     ->label('Edit')
                     ->icon('heroicon-m-pencil-square')
                     ->color('warning')
-                    ->modalHeading('Edit Data Staf')
+                    ->modalHeading('Edit Staff Data')
                     ->modalWidth('lg')
                     ->visible(fn()=> Auth::user()?->hasRole('super_admin')),
             ])

@@ -17,11 +17,11 @@ class ViewPemohon extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make()->label('Edit Staf'),
+            Actions\EditAction::make()->label('Edit Staff'),
 
             // Assign role for staff
             Actions\Action::make('assignRole')
-                ->label('Tetapkan Role')
+                ->label('Set Role')
                 ->icon('heroicon-m-user-plus')
                 ->color('info')
                 ->action(function (array $data) {
@@ -31,19 +31,18 @@ class ViewPemohon extends ViewRecord
 
                     if (!$user) {
                         Notification::make()
-                            ->title('Pengguna tidak dijumpai')
-                            ->body('Rekod User untuk staf ini tiada. Pastikan User wujud & ada staff_id yang sama.')
+                            ->title('User Not Found')
+                            ->body('User record not found for this staff.')
                             ->danger()
                             ->send();
                         return;
                     }
 
-                    // Tetapkan role tunggal (guna syncRoles untuk overwrite penuh)
                     $user->syncRoles([$data['role']]);
 
                     Notification::make()
-                        ->title('Role dikemaskini')
-                        ->body("{$pemohon->nama} kini mempunyai role: {$data['role']}.")
+                        ->title('Role Updated')
+                        ->body("{$pemohon->nama} current role is: {$data['role']}.")
                         ->success()
                         ->send();
                 })

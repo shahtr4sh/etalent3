@@ -30,7 +30,7 @@ class PromotionApplicationResource extends Resource
 
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?string $navigationLabel = 'Permohonan';
+    protected static ?string $navigationLabel = 'Application';
 
     protected static ?int $navigationSort = 1;
 
@@ -47,12 +47,12 @@ class PromotionApplicationResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('staff_id')
-                    ->label('ID Staf')
+                    ->label('Staff ID')
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('nama_staf')
-                    ->label('Nama Staf')
+                    ->label('Staff Name')
                     ->getStateUsing(function ($record) {
                         $staff = Pemohon::where('staff_id', $record->staff_id)->first();
                         return $staff?->nama ?? '-';
@@ -64,7 +64,7 @@ class PromotionApplicationResource extends Resource
                     }),
 
                 TextColumn::make('gred_jawatan')
-                    ->label('Gred Dipohon')
+                    ->label('Applied Grade')
                     ->formatStateUsing(function ($state, $record) {
                         // Cari dalam select_jawatan berdasarkan gred_jawatan
                         $selectJawatan = \App\Models\SelectJawatan::where('gredJawatan', $state)->first();
@@ -78,7 +78,7 @@ class PromotionApplicationResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('reference_no')
-                    ->label('No. Rujukan')
+                    ->label('Reference No.')
                     ->searchable(),
 
                 BadgeColumn::make('status')
@@ -94,19 +94,19 @@ class PromotionApplicationResource extends Resource
                     ->formatStateUsing(fn ($state) => str_replace('_', ' ', $state)),
 
                 BadgeColumn::make('is_active')
-                    ->label('Aktif')
+                    ->label('Active')
                     ->color(fn ($state) => $state ? 'success' : 'danger')
-                    ->formatStateUsing(fn ($state) => $state ? 'Aktif' : 'Tidak Aktif'),
+                    ->formatStateUsing(fn ($state) => $state ? 'Active' : 'Inactive'),
 
                 TextColumn::make('created_at')
-                    ->label('Tarikh Mohon')
+                    ->label('Applied Date')
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('status')
                     ->options([
-                        'DRAF' => 'Draf',
+                        'DRAFT' => 'Draf',
                         'DIHANTAR' => 'Dihantar',
                         'MENUNGGU_SEMAKAN' => 'Menunggu Semakan',
                         'DALAM_SEMAKAN' => 'Dalam Semakan',
@@ -116,16 +116,16 @@ class PromotionApplicationResource extends Resource
                     ]),
 
                 SelectFilter::make('is_active')
-                    ->label('Status Aktif')
+                    ->label('Active Status')
                     ->options([
-                        1 => 'Aktif',
-                        0 => 'Tidak Aktif',
+                        1 => 'Active',
+                        0 => 'Inactive',
                     ]),
 
                 Filter::make('created_at')
                     ->form([
-                        DatePicker::make('created_from')->label('Dari Tarikh'),
-                        DatePicker::make('created_until')->label('Hingga Tarikh'),
+                        DatePicker::make('created_from')->label('From'),
+                        DatePicker::make('created_until')->label('Until'),
                     ])
                     ->query(function ($query, array $data) {
                         return $query
