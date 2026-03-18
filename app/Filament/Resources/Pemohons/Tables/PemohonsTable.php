@@ -4,15 +4,14 @@ namespace App\Filament\Resources\Pemohons\Tables;
 
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\Action;
 use Filament\Actions\EditAction;
-use Filament\Actions\ActionGroup;
 use Illuminate\Support\Facades\Auth;
 
 class PemohonsTable
 {
     public static function configure(Table $table): Table
     {
+
         return $table
             ->columns([
                 TextColumn::make('staff_id')
@@ -32,6 +31,14 @@ class PemohonsTable
                     ->label('Official Email')
                     ->searchable(),
 
+                // Optional: Show if user exists
+                TextColumn::make('user_exists')
+                    ->label('Has User')
+                    ->badge()
+                    ->getStateUsing(fn ($record) => $record->user ? 'Yes' : 'No')
+                    ->color(fn ($state) => $state === 'Yes' ? 'success' : 'danger')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('created_at')
                     ->label('Created At')
                     ->dateTime()
@@ -44,16 +51,20 @@ class PemohonsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->actions([
+            ->recordActions([
+
                 EditAction::make()
                     ->label('Edit')
                     ->icon('heroicon-m-pencil-square')
-                    ->color('warning')
+                    ->color('primary')
                     ->modalHeading('Edit Staff Data')
                     ->modalWidth('lg')
-                    ->visible(fn()=> Auth::user()?->hasRole('super_admin')),
+                    ->visible(fn() => Auth::user()?->hasRole('super_admin')),
             ])
-            ->modifyQueryUsing(fn ($query) => $query->where('status', '!=', 'T'))
+            ->modifyQueryUsing(fn ($query) => $query
+                ->where('status', '!=', 'T')
+                ->whereHas('user') // Hanya papar staff yang wujud dalam table users
+            )
             ->defaultSort('created_at', 'desc');
     }
 }

@@ -125,7 +125,7 @@ class PromotionApplicationResource extends Resource
                 Filter::make('created_at')
                     ->form([
                         DatePicker::make('created_from')->label('From'),
-                        DatePicker::make('created_until')->label('Until'),
+                        DatePicker::make('created_until')->label('Untilphp'),
                     ])
                     ->query(function ($query, array $data) {
                         return $query

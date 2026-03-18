@@ -1,0 +1,224 @@
+/* Custom Login Page Styling */
+
+/* Background dengan pattern professional */
+.fi-simple-layout {
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.fi-simple-layout::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(42, 92, 126, 0.95) 0%, rgba(104, 67, 142, 0.95) 100%);
+    z-index: 1;
+}
+
+.fi-simple-layout > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* Login Card Styling */
+.fi-simple-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    padding: 2.5rem;
+    max-width: 450px;
+    margin: 2rem auto;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Logo section */
+.fi-logo {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.fi-logo img {
+    max-height: 80px;
+    width: auto;
+    margin: 0 auto;
+}
+
+/* Header styling */
+.fi-simple-header h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #2A5C7E;
+    margin-bottom: 0.5rem;
+}
+
+.fi-simple-header p {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+/* Form fields */
+.fi-simple-layout input[type="text"],
+.fi-simple-layout input[type="email"],
+.fi-simple-layout input[type="password"] {
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.fi-simple-layout input:focus {
+    border-color: #2A5C7E;
+    box-shadow: 0 0 0 3px rgba(42, 92, 126, 0.1);
+    outline: none;
+}
+
+/* Labels */
+.fi-simple-layout label {
+    font-weight: 500;
+    color: #2A5C7E;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+/* Submit button */
+.fi-simple-layout button[type="submit"] {
+    background: linear-gradient(135deg, #2A5C7E 0%, #4169E1 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 0.875rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 1.5rem;
+}
+
+.fi-simple-layout button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(42, 92, 126, 0.2);
+    background: linear-gradient(135deg, #1e4a6a 0%, #3155b3 100%);
+}
+
+/* Remember me checkbox */
+.fi-simple-layout .fi-checkbox {
+    margin-top: 1rem;
+}
+
+.fi-simple-layout .fi-checkbox label {
+    color: #555;
+    font-weight: 400;
+    margin-left: 0.5rem;
+}
+
+/* Links */
+.fi-simple-layout a {
+    color: #2A5C7E;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.fi-simple-layout a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
+/* Error messages */
+.fi-simple-layout .text-danger {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+/* Divider */
+.fi-simple-layout .fi-divider {
+    margin: 1.5rem 0;
+    border-color: #e0e0e0;
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+    .fi-simple-card {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .fi-simple-header h1 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Animation for card entrance */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fi-simple-card {
+    animation: slideUp 0.6s ease-out;
+}
+
+/* Loading state */
+.fi-simple-layout button[type="submit"].loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+    position: relative;
+    padding-right: 2.5rem;
+}
+
+.fi-simple-layout button[type="submit"].loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+    border: 2px solid white;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: translateY(-50%) rotate(360deg);
+    }
+}
+
+/* Hover effects for form fields */
+.fi-simple-layout .form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.fi-simple-layout .form-group i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    transition: color 0.3s ease;
+}
+
+.fi-simple-layout .form-group.focused i {
+    color: #2A5C7E;
+}
+
+.fi-simple-layout .form-group.focused input {
+    padding-left: 2.5rem;
+}
